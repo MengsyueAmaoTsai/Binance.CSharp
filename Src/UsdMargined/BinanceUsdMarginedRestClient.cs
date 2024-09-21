@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 
 using RichillCapital.Binance.Shared;
+using RichillCapital.Binance.UsdMargined.Contracts;
 using RichillCapital.SharedKernel.Monads;
 
 namespace RichillCapital.Binance.UsdMargined;
@@ -56,5 +57,17 @@ internal sealed class BinanceUsdMarginedRestClient(
              cancellationToken);
 
         return await HandleResponseAsync(response, cancellationToken);
+    }
+
+    public async Task<Result<BinanceAccountBalanceResponse>> GetAccountBalanceAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var path = "fapi/v3/balance";
+        _logger.LogInformation("Invoke path: {path}", path);
+
+        _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", ApiKey);
+        var response = await _httpClient.GetAsync(path, cancellationToken);
+
+        return await HandleResponseAsync<BinanceAccountBalanceResponse>(response, cancellationToken);
     }
 }

@@ -1,0 +1,5 @@
+﻿@Localhost = https://localhost:20000
+
+### Get account balance
+GET {{Localhost}}/api/usd-m/balance
+

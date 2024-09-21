@@ -1,3 +1,4 @@
+using RichillCapital.Binance.UsdMargined.Contracts;
 using RichillCapital.SharedKernel.Monads;
 
 namespace RichillCapital.Binance.UsdMargined;
@@ -10,4 +11,6 @@ public interface IBinanceUsdMarginedRestClient
         string type,
         decimal quantity,
         CancellationToken cancellationToken = default);
+
+    Task<Result<BinanceAccountBalanceResponse>> GetAccountBalanceAsync(CancellationToken cancellationToken = default);
 }

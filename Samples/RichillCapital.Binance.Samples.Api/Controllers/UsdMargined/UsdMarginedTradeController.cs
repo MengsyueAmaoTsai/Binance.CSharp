@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Binance.UsdMargined;
 
-namespace RichillCapital.Binance.Samples.Api.Controllers;
+namespace RichillCapital.Binance.Samples.Api.Controllers.UsdMargined;
 
 [ApiController]
 public class UsdMarginedTradeController(
