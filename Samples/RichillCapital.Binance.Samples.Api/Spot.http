@@ -1,0 +1,7 @@
+@Localhost = https://localhost:20000
+
+### Ping
+GET {{Localhost}}/api/spot/ping
+
+### Get server time
+GET {{Localhost}}/api/spot/server-time
