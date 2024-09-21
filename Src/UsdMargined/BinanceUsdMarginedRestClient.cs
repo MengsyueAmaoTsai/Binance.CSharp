@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
 
-using RichillCapital.Binance.Authentication;
+using RichillCapital.Binance.Shared;
 using RichillCapital.Binance.Extensions;
 using RichillCapital.SharedKernel.Monads;
 

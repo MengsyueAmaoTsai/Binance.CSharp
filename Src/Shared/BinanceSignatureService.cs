@@ -3,7 +3,7 @@ using System.Text;
 
 using Microsoft.Extensions.Logging;
 
-namespace RichillCapital.Binance.Authentication;
+namespace RichillCapital.Binance.Shared;
 
 internal sealed class BinanceSignatureService(
     ILogger<BinanceSignatureService> _logger)

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace RichillCapital.Binance.Authentication;
+namespace RichillCapital.Binance.Shared;
 
 public static class BinanceExtensions
 {
