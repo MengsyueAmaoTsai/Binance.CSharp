@@ -15,6 +15,9 @@ internal sealed class BinanceSpotRestClient(
     BinanceSpotSignatureService _signatureService) :
     IBinanceSpotRestClient
 {
+    private const string ApiKey = "guVqJIzZ29JZx2BTv9VbxxOr7IehQIIRRXABm53rawtThH0XcD8EeyzUtMbIaQ92";
+    private const string SecretKey = "BPwSSG45zE8ABiZ6Zm4t9gJFJMo19ExjBqOQlmLcOM5LgfyYP6V5biYrsUkZfXxm";
+
     private const int RecvWindow = 60000;
 
     public async Task<Result> PingAsync(CancellationToken cancellationToken = default)
@@ -44,16 +47,13 @@ internal sealed class BinanceSpotRestClient(
         decimal quantity,
         CancellationToken cancellationToken = default)
     {
-        var apiKey = "guVqJIzZ29JZx2BTv9VbxxOr7IehQIIRRXABm53rawtThH0XcD8EeyzUtMbIaQ92";
-        var secretKey = "BPwSSG45zE8ABiZ6Zm4t9gJFJMo19ExjBqOQlmLcOM5LgfyYP6V5biYrsUkZfXxm";
-
         var queryString = $"symbol={symbol}&side={side}&type={type}&quantity={quantity}";
         queryString += $"&recvWindow={RecvWindow}&timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
-        queryString += $"&signature={_signatureService.Sign(secretKey, queryString)}";
+        queryString += $"&signature={_signatureService.Sign(SecretKey, queryString)}";
 
         _logger.LogInformation("Final query string: {queryString}", queryString);
 
-        _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", apiKey);
+        _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", ApiKey);
 
         var path = BinanceSpotApiRoutes.Trading.NewOrder;
         _logger.LogInformation("Invoke path: {path}", path);
@@ -68,16 +68,13 @@ internal sealed class BinanceSpotRestClient(
 
     public async Task<Result> TestNewOrderAsync(string symbol, string side, string type, decimal quantity, CancellationToken cancellationToken = default)
     {
-        var apiKey = "guVqJIzZ29JZx2BTv9VbxxOr7IehQIIRRXABm53rawtThH0XcD8EeyzUtMbIaQ92";
-        var secretKey = "BPwSSG45zE8ABiZ6Zm4t9gJFJMo19ExjBqOQlmLcOM5LgfyYP6V5biYrsUkZfXxm";
-
         var queryString = $"symbol={symbol}&side={side}&type={type}&quantity={quantity}";
         queryString += $"&recvWindow={RecvWindow}&timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
-        queryString += $"&signature={_signatureService.Sign(secretKey, queryString)}";
+        queryString += $"&signature={_signatureService.Sign(SecretKey, queryString)}";
 
         _logger.LogInformation("Final query string: {queryString}", queryString);
 
-        _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", apiKey);
+        _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", ApiKey);
 
         var path = BinanceSpotApiRoutes.Trading.NewOrder;
         _logger.LogInformation("Invoke path: {path}", path);
