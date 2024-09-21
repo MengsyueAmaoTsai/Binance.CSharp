@@ -1,0 +1,52 @@
+name: RichillCapital.Binance CI
+
+on:
+  push:
+    branches:
+      - master
+      - dev
+
+  pull_request:
+    branches:
+      - master
+      - dev
+env:
+  PACKAGE_ID: RichillCapital.Binance
+  PROJECT_PATH: ./RichillCapital.Binance.csproj
+  CAKE_FILE_PATH: ./build.cake
+  TARGET: Default
+  CONFIGURATION: Debug
+  ARTIFACTS_DIRECTORY: ./artifacts
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Use Nerdbank.GitVersioning
+      uses: dotnet/nbgv@master
+      id: nbgv
+
+    - name: Get Version
+      id: version
+      run: echo "::set-output name=version::$(git describe --tags --abbrev=0 || date +'%Y%m%d')-${{ steps.nbgv.outputs.GitCommitIdShort }}"
+
+    - name: .NET Build and Tests
+      uses: cake-build/cake-action@v2
+      with:
+        script-path: ${{ env.CAKE_FILE_PATH }}
+        target: ${{ env.TARGET }}
+        verbosity: Diagnostic
+        arguments: |
+          configuration: ${{ env.CONFIGURATION }}
+      
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.PACKAGE_ID }}-${{ steps.version.outputs.version }}-${{ env.CONFIGURATION }}
+        path: ${{ env.ARTIFACTS_DIRECTORY }}          

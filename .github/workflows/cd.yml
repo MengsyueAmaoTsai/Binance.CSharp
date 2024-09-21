@@ -1,0 +1,47 @@
+name: RichillCapital.Binance CD
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  PROJECT_PATH: ./RichillCapital.Binance.csproj
+  CAKE_FILE_PATH: ./build.cake
+  TARGET: Default
+  CONFIGURATION: Release
+  ARTIFACTS_DIRECTORY: ./artifacts
+  NUGET_SOURCE: https://api.nuget.org/v3/index.json
+
+jobs:
+  push-nuget:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Get Version
+      id: version
+      run: echo "::set-output name=version::$(git describe --tags --abbrev=0)"
+    
+    - name: Update Version
+      run: |
+        sudo apt-get install -y xmlstarlet
+        assemblyVersion=${{ steps.version.outputs.version }}
+        xmlstarlet ed --inplace -u "/Project/PropertyGroup/Version" -v "${assemblyVersion}" ${{ env.PROJECT_PATH }}
+        
+    - name: .NET Build and Tests
+      uses: cake-build/cake-action@v2
+      with:
+        script-path: ${{ env.CAKE_FILE_PATH }}
+        target: ${{ env.TARGET }}
+        verbosity: Diagnostic
+        arguments: |
+          configuration: ${{ env.CONFIGURATION }}
+    
+    - name: Push to NuGet Gallery
+      run: |
+        dotnet nuget push ${{ env.ARTIFACTS_DIRECTORY }}/*.nupkg --source ${{ env.NUGET_SOURCE }} --api-key ${{ secrets.NUGET_API_KEY }}
