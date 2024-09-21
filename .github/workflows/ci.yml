@@ -46,7 +46,7 @@ jobs:
           configuration: ${{ env.CONFIGURATION }}
       
     - name: Upload Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ env.PACKAGE_ID }}-${{ steps.version.outputs.version }}-${{ env.CONFIGURATION }}
         path: ${{ env.ARTIFACTS_DIRECTORY }}          
