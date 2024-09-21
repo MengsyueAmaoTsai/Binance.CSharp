@@ -120,16 +120,29 @@ internal sealed class BinanceSpotRestClient(
 
             var errorResponse = JsonConvert.DeserializeObject<BinanceErrorResponse>(responseContent);
 
-            var error = response switch
+            var errorType = response switch
             {
-                { StatusCode: HttpStatusCode.BadRequest } => Error.Invalid(errorResponse!.Code.ToString(), errorResponse!.Message),
-                { StatusCode: HttpStatusCode.Unauthorized } => Error.Unauthorized(errorResponse!.Code.ToString(), errorResponse!.Message),
-                { StatusCode: HttpStatusCode.Forbidden } => Error.Forbidden(errorResponse!.Code.ToString(), errorResponse!.Message),
-                { StatusCode: HttpStatusCode.NotFound } => Error.NotFound(errorResponse!.Code.ToString(), errorResponse!.Message),
-                { StatusCode: HttpStatusCode.Conflict } => Error.Conflict(errorResponse!.Code.ToString(), errorResponse!.Message),
-                { StatusCode: HttpStatusCode.InternalServerError } => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message),
-                _ => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message)
+                { StatusCode: HttpStatusCode.BadRequest } => ErrorType.Validation,
+                { StatusCode: HttpStatusCode.Unauthorized } => ErrorType.Unauthorized,
+                { StatusCode: HttpStatusCode.Forbidden } => ErrorType.Forbidden,
+                { StatusCode: HttpStatusCode.NotFound } => ErrorType.NotFound,
+                { StatusCode: HttpStatusCode.Conflict } => ErrorType.Conflict,
+                { StatusCode: HttpStatusCode.InternalServerError } => ErrorType.Unexpected,
+                _ => ErrorType.Unexpected,
             };
+
+            // var error = response switch
+            // {
+            //     { StatusCode: HttpStatusCode.BadRequest } => Error.Invalid(errorResponse!.Code.ToString(), errorResponse!.Message),
+            //     { StatusCode: HttpStatusCode.Unauthorized } => Error.Unauthorized(errorResponse!.Code.ToString(), errorResponse!.Message),
+            //     { StatusCode: HttpStatusCode.Forbidden } => Error.Forbidden(errorResponse!.Code.ToString(), errorResponse!.Message),
+            //     { StatusCode: HttpStatusCode.NotFound } => Error.NotFound(errorResponse!.Code.ToString(), errorResponse!.Message),
+            //     { StatusCode: HttpStatusCode.Conflict } => Error.Conflict(errorResponse!.Code.ToString(), errorResponse!.Message),
+            //     { StatusCode: HttpStatusCode.InternalServerError } => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message),
+            //     _ => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message)
+            // };
+
+            var error = CreateError(errorType, errorResponse!);
 
             _logger.LogError("Transformed {error}", error);
 
@@ -139,5 +152,33 @@ internal sealed class BinanceSpotRestClient(
         _logger.LogInformation($"Success send request: {uri}. Status: {response.StatusCode}");
 
         return Result.Success;
+    }
+
+    private static Error CreateError(
+        ErrorType errorType,
+        BinanceErrorResponse errorResponse)
+    {
+        var code = GetErrorCode(errorResponse);
+        return errorType switch
+        {
+            ErrorType.Validation => Error.Invalid(code, errorResponse!.Message),
+            ErrorType.Unauthorized => Error.Unauthorized(code, errorResponse!.Message),
+            ErrorType.Forbidden => Error.Forbidden(code, errorResponse!.Message),
+            ErrorType.NotFound => Error.NotFound(code, errorResponse!.Message),
+            ErrorType.Conflict => Error.Conflict(code, errorResponse!.Message),
+            ErrorType.Unexpected => Error.Unexpected(code, errorResponse!.Message),
+            _ => Error.Unexpected(code, errorResponse!.Message)
+        };
+    }
+
+    private static string GetErrorCode(BinanceErrorResponse errorResponse)
+    {
+        var suffix = errorResponse switch
+        {
+            { Code: -2010 } => "NewOrderRejected",
+            _ => throw new NotImplementedException($"Error code for {errorResponse} is not defined."),
+        };
+
+        return $"BinanceSpot.{suffix}";
     }
 }
