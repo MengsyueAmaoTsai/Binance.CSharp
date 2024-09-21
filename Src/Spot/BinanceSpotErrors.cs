@@ -32,6 +32,7 @@ internal static class BinanceSpotErrors
             -2010 => "NewOrderRejected",
 
             // USD-M
+            -2015 => "RejectedMbxKey",
             -2019 => "MarginNotSufficient",
             -2020 => "UnableToFill",
             -2021 => "OrderWouldImmediatelyTrigger",
