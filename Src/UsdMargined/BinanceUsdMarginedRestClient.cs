@@ -73,4 +73,46 @@ internal sealed class BinanceUsdMarginedRestClient(
 
         return await HandleResponseAsync<BinanceAccountBalanceResponse>(response, cancellationToken);
     }
+
+    public async Task<Result<PositionModeResponse>> GetPositionModeAsync(CancellationToken cancellationToken = default)
+    {
+        var path = "fapi/v3/positionSide/dual";
+
+        var queryString = $"recvWindow={RecvWindow}&timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        path += $"?{queryString}";
+        _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", ApiKey);
+
+        _logger.LogInformation("Invoke path: {path}", path);
+        var response = await _httpClient.GetAsync(path, cancellationToken);
+
+        return await HandleResponseAsync<PositionModeResponse>(response, cancellationToken);
+    }
+
+    public async Task<Result<BinanceAccountConfigurationResponse>> GetAccountConfigurationAsync(CancellationToken cancellationToken = default)
+    {
+        var path = "fapi/v1/accountConfig";
+
+        var queryString = $"recvWindow={RecvWindow}&timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        path += $"?{queryString}";
+        _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", ApiKey);
+
+        _logger.LogInformation("Invoke path: {path}", path);
+        var response = await _httpClient.GetAsync(path, cancellationToken);
+
+        return await HandleResponseAsync<BinanceAccountConfigurationResponse>(response, cancellationToken);
+    }
+
+    public async Task<Result<BinanceAccountInformationResponse>> GetAccountInformationAsync(CancellationToken cancellationToken = default)
+    {
+        var path = "fapi/v3/account";
+
+        var queryString = $"recvWindow={RecvWindow}&timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        path += $"?{queryString}";
+        _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", ApiKey);
+
+        _logger.LogInformation("Invoke path: {path}", path);
+        var response = await _httpClient.GetAsync(path, cancellationToken);
+
+        return await HandleResponseAsync<BinanceAccountInformationResponse>(response, cancellationToken);
+    }
 }

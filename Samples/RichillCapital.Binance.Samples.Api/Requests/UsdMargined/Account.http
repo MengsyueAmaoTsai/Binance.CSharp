@@ -8,3 +8,6 @@ GET {{Localhost}}/api/usd-m/account
 
 ### Get account cnofiguration
 GET {{Localhost}}/api/usd-m/account-configuration
+
+### Get current position mode
+GET {{Localhost}}/api/usd-m/position-mode

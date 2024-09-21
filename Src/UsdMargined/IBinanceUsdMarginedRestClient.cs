@@ -13,4 +13,7 @@ public interface IBinanceUsdMarginedRestClient
         CancellationToken cancellationToken = default);
 
     Task<Result<BinanceAccountBalanceResponse>> GetAccountBalanceAsync(CancellationToken cancellationToken = default);
+    Task<Result<PositionModeResponse>> GetPositionModeAsync(CancellationToken cancellationToken = default);
+    Task<Result<BinanceAccountConfigurationResponse>> GetAccountConfigurationAsync(CancellationToken cancellationToken = default);
+    Task<Result<BinanceAccountInformationResponse>> GetAccountInformationAsync(CancellationToken cancellationToken = default);
 }
