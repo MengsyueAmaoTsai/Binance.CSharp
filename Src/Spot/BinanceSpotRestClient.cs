@@ -15,11 +15,11 @@ internal sealed class BinanceSpotRestClient(
 {
     public async Task<Result> PingAsync(CancellationToken cancellationToken = default)
     {
-        var path = "api/v3/ping";
+        var path = BinanceSpotApiRoutes.General.Ping;
         _logger.LogInformation("Invoke path: {path}", path);
 
         var response = await _httpClient.GetAsync(path);
-        
+
         if (!response.IsSuccessStatusCode)
         {
             _logger.LogError("Request {path} failed. Status: {status}", path, response.StatusCode);
@@ -34,7 +34,7 @@ internal sealed class BinanceSpotRestClient(
 
     public async Task<Result<BinanceServerTimeResponse>> GetServerTimeAsync(CancellationToken cancellationToken = default)
     {
-        var path = "api/v3/time";
+        var path = BinanceSpotApiRoutes.General.ServerTime;
         _logger.LogInformation("Invoke path: {path}", path);
 
         var response = await _httpClient.GetAsync(path);
@@ -43,12 +43,33 @@ internal sealed class BinanceSpotRestClient(
         {
             _logger.LogError("Request {path} failed. Status: {status}", path, response.StatusCode);
 
-            return Result< BinanceServerTimeResponse>.Failure(Error.Unexpected($"Request {path} failed. Status: {response.StatusCode}"));
+            return Result<BinanceServerTimeResponse>.Failure(Error.Unexpected($"Request {path} failed. Status: {response.StatusCode}"));
         }
 
         _logger.LogInformation($"Success send request: {path}. Status: {response.StatusCode}");
         var serverTime = await response.Content.ReadFromJsonAsync<BinanceServerTimeResponse>();
 
-        return Result<BinanceServerTimeResponse>.With(serverTime);
+        return Result<BinanceServerTimeResponse>.With(serverTime!);
+    }
+
+    public async Task<Result<BinanceExchangeInfoResponse>> GetExchangeInfoAsync(CancellationToken cancellationToken = default)
+    {
+        var path = BinanceSpotApiRoutes.General.ExchangeInfo;
+
+        _logger.LogInformation("Invoke path: {path}", path);
+
+        var response = await _httpClient.GetAsync(path);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogError("Request {path} failed. Status: {status}", path, response.StatusCode);
+
+            return Result<BinanceExchangeInfoResponse>.Failure(Error.Unexpected($"Request {path} failed. Status: {response.StatusCode}"));
+        }
+
+        _logger.LogInformation($"Success send request: {path}. Status: {response.StatusCode}");
+        var exchangeInfo = await response.Content.ReadFromJsonAsync<BinanceExchangeInfoResponse>();
+
+        return Result<BinanceExchangeInfoResponse>.With(exchangeInfo!);
     }
 }
