@@ -8,4 +8,9 @@ internal static class BinanceSpotApiRoutes
         internal const string ServerTime = "api/v3/time";
         internal const string ExchangeInfo = "api/v3/exchangeInfo";
     }
+
+    internal static class Trading
+    {
+        internal const string NewOrder = "api/v3/order";
+    }
 }

@@ -8,6 +8,8 @@ public static class BinanceSpotExtensions
         this IServiceCollection services,
         string baseAddress)
     {
+        services.AddTransient<BinanceSpotSignatureService>();
+
         services.AddHttpClient<IBinanceSpotRestClient, BinanceSpotRestClient>(client =>
         {
             client.BaseAddress = new Uri(baseAddress);
