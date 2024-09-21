@@ -8,13 +8,13 @@ using RichillCapital.Binance.Authentication;
 using RichillCapital.Binance.Extensions;
 using RichillCapital.SharedKernel.Monads;
 
-namespace RichillCapital.Binance.UsdM;
+namespace RichillCapital.Binance.UsdMargined;
 
-internal sealed class BinanceUsdMRestClient(
-    ILogger<BinanceUsdMRestClient> _logger,
+internal sealed class BinanceUsdMarginedRestClient(
+    ILogger<BinanceUsdMarginedRestClient> _logger,
     HttpClient _httpClient,
     BinanceSignatureService _signatureService) :
-    IBinanceUsdMRestClient
+    IBinanceUsdMarginedRestClient
 {
     private const string ApiKey = "guVqJIzZ29JZx2BTv9VbxxOr7IehQIIRRXABm53rawtThH0XcD8EeyzUtMbIaQ92";
     private const string SecretKey = "BPwSSG45zE8ABiZ6Zm4t9gJFJMo19ExjBqOQlmLcOM5LgfyYP6V5biYrsUkZfXxm";

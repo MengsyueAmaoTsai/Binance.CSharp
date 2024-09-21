@@ -1,5 +1,5 @@
 using RichillCapital.Binance.Spot;
-using RichillCapital.Binance.UsdM;
+using RichillCapital.Binance.UsdMargined;
 using RichillCapital.Binance.Margin;
 using RichillCapital.Binance.Authentication;
 
@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddBinanceSignatureService();
 builder.Services.AddBinanceSpotRestClient("https://api.binance.com");
 builder.Services.AddBinanceMarginRestClient("https://api.binance.com");
-builder.Services.AddBinanceUsdMRestClient("https://fapi.binance.com");
+builder.Services.AddBinanceUsdMarginedRestClient("https://fapi.binance.com");
 
 var app = builder.Build();
 

@@ -1,16 +1,16 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace RichillCapital.Binance.UsdM;
+namespace RichillCapital.Binance.UsdMargined;
 
-public static class BinanceUsdMExtensions
+public static class BinanceUsdMarginedExtensions
 {
-    public static IServiceCollection AddBinanceUsdMRestClient(
+    public static IServiceCollection AddBinanceUsdMarginedRestClient(
         this IServiceCollection services,
         string baseAddress)
     {
         // services.AddTransient<BinanceSpotSignatureService>();
 
-        services.AddHttpClient<IBinanceUsdMRestClient, BinanceUsdMRestClient>(client =>
+        services.AddHttpClient<IBinanceUsdMarginedRestClient, BinanceUsdMarginedRestClient>(client =>
         {
             client.BaseAddress = new Uri(baseAddress);
             client.DefaultRequestHeaders.Clear();

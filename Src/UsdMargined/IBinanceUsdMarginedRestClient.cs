@@ -1,8 +1,8 @@
 using RichillCapital.SharedKernel.Monads;
 
-namespace RichillCapital.Binance.UsdM;
+namespace RichillCapital.Binance.UsdMargined;
 
-public interface IBinanceUsdMRestClient
+public interface IBinanceUsdMarginedRestClient
 {
     Task<Result> NewOrderAsync(
         string symbol,
