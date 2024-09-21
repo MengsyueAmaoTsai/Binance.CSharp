@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 using RichillCapital.Binance.Spot.Contracts;
+using RichillCapital.Binance.Spot.Errors;
 using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monads;
 
@@ -104,9 +105,7 @@ internal sealed class BinanceSpotRestClient(
                 response.StatusCode,
                 responseContent);
 
-            var errorResponse = JsonConvert.DeserializeObject<BinanceErrorResponse>(responseContent);
-            var error = CreateError(response.GetErrorType(), errorResponse!);
-
+            var error = await response.ToErrorAsync();
             _logger.LogError("Transformed {error}", error);
 
             return Result<TBinanceResponse>.Failure(error);
@@ -131,9 +130,7 @@ internal sealed class BinanceSpotRestClient(
                 response.StatusCode,
                 responseContent);
 
-            var errorResponse = JsonConvert.DeserializeObject<BinanceErrorResponse>(responseContent);
-            var error = CreateError(response.GetErrorType(), errorResponse!);
-
+            var error = await response.ToErrorAsync();
             _logger.LogError("Transformed {error}", error);
 
             return Result.Failure(error);
@@ -142,33 +139,5 @@ internal sealed class BinanceSpotRestClient(
         _logger.LogInformation($"Success send request: {uri}. Status: {response.StatusCode}, {responseContent}");
 
         return Result.Success;
-    }
-
-    private static Error CreateError(
-        ErrorType errorType,
-        BinanceErrorResponse errorResponse)
-    {
-        var code = GetErrorCode(errorResponse);
-        return errorType switch
-        {
-            ErrorType.Validation => Error.Invalid(code, errorResponse!.Message),
-            ErrorType.Unauthorized => Error.Unauthorized(code, errorResponse!.Message),
-            ErrorType.Forbidden => Error.Forbidden(code, errorResponse!.Message),
-            ErrorType.NotFound => Error.NotFound(code, errorResponse!.Message),
-            ErrorType.Conflict => Error.Conflict(code, errorResponse!.Message),
-            ErrorType.Unexpected => Error.Unexpected(code, errorResponse!.Message),
-            _ => Error.Unexpected(code, errorResponse!.Message)
-        };
-    }
-
-    private static string GetErrorCode(BinanceErrorResponse errorResponse)
-    {
-        var suffix = errorResponse switch
-        {
-            { Code: -2010 } => "NewOrderRejected",
-            _ => throw new NotImplementedException($"Error code for {errorResponse} is not defined."),
-        };
-
-        return $"BinanceSpot.{suffix}";
     }
 }
