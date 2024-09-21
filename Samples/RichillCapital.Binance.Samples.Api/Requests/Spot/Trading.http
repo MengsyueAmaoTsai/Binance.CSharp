@@ -7,5 +7,6 @@ Content-Type: application/json
 {
     "symbol": "BTCUSDT",
     "side": "BUY",
-    "type": "MARKET"
+    "type": "MARKET",
+    "quantity": 1
 }

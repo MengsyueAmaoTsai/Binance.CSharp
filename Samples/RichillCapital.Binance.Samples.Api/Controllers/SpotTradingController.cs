@@ -18,6 +18,7 @@ public class SpotTradingController(
             request.Symbol,
             request.Side,
             request.Type,
+            request.Quantity,
             cancellationToken);
 
         return Ok();
@@ -29,4 +30,5 @@ public sealed record NewOrderRequest
     public required string Symbol { get; init; }
     public required string Side { get; init; }
     public required string Type { get; init; }
+    public required decimal Quantity { get; init; }
 }

@@ -1,5 +1,4 @@
 using System.Net;
-using System.Net.Http.Json;
 using System.Text;
 
 using Microsoft.Extensions.Logging;
@@ -18,6 +17,8 @@ internal sealed class BinanceSpotRestClient(
     BinanceSpotSignatureService _signatureService) :
     IBinanceSpotRestClient
 {
+    private const int RecvWindow = 60000;
+
     public async Task<Result> PingAsync(CancellationToken cancellationToken = default)
     {
         var path = BinanceSpotApiRoutes.General.Ping;
@@ -42,15 +43,15 @@ internal sealed class BinanceSpotRestClient(
         string symbol,
         string side,
         string type,
+        decimal quantity,
         CancellationToken cancellationToken = default)
     {
         var apiKey = "guVqJIzZ29JZx2BTv9VbxxOr7IehQIIRRXABm53rawtThH0XcD8EeyzUtMbIaQ92";
         var secretKey = "BPwSSG45zE8ABiZ6Zm4t9gJFJMo19ExjBqOQlmLcOM5LgfyYP6V5biYrsUkZfXxm";
 
-        var recvWindow = 5000;
-        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        var queryString = $"symbol={symbol}&side={side}&type={type}&recvWindow={recvWindow}&timestamp={timestamp}";
-        queryString += $"&signature={_signatureService.Sign(queryString, secretKey)}";
+        var queryString = $"symbol={symbol}&side={side}&type={type}&quantity={quantity}";
+        queryString += $"&recvWindow={RecvWindow}&timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        queryString += $"&signature={_signatureService.Sign(secretKey, queryString)}";
 
         _logger.LogInformation("Final query string: {queryString}", queryString);
 
@@ -60,7 +61,7 @@ internal sealed class BinanceSpotRestClient(
         _logger.LogInformation("Invoke path: {path}", path);
 
         var response = await _httpClient.PostAsync(
-             "api/v3/order",
+             BinanceSpotApiRoutes.Trading.NewOrder,
              new StringContent(queryString, Encoding.UTF8, "application/x-www-form-urlencoded"),
              cancellationToken);
 
@@ -93,7 +94,7 @@ internal sealed class BinanceSpotRestClient(
                 _ => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message)
             };
 
-            _logger.LogInformation("Transformed error response: {errorResponse}", errorResponse);
+            _logger.LogError("Transformed {error}", error);
 
             return Result<TBinanceResponse>.Failure(error);
         }
@@ -130,7 +131,7 @@ internal sealed class BinanceSpotRestClient(
                 _ => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message)
             };
 
-            _logger.LogInformation("Transformed error response: {errorResponse}", errorResponse);
+            _logger.LogError("Transformed {error}", error);
 
             return Result.Failure(error);
         }
