@@ -12,5 +12,6 @@ internal static class BinanceSpotApiRoutes
     internal static class Trading
     {
         internal const string NewOrder = "api/v3/order";
+        internal const string TestNewOrder = "api/v3/order/test";
     }
 }

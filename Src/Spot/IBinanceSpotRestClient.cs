@@ -9,4 +9,5 @@ public interface IBinanceSpotRestClient
     Task<Result<BinanceServerTimeResponse>> GetServerTimeAsync(CancellationToken cancellationToken = default);
     Task<Result<BinanceExchangeInfoResponse>> GetExchangeInfoAsync(CancellationToken cancellationToken = default);
     Task<Result> NewOrderAsync(string symbol, string side, string type, decimal quantity, CancellationToken cancellationToken = default);
+    Task<Result> TestNewOrderAsync(string symbol, string side, string type, decimal quantity, CancellationToken cancellationToken = default);
 }

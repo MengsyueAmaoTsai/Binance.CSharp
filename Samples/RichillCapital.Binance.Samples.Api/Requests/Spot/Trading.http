@@ -10,3 +10,16 @@ Content-Type: application/json
     "type": "MARKET",
     "quantity": 1
 }
+
+
+### Test new order
+POST {{Localhost}}/api/spot/orders/test
+Content-Type: application/json
+
+{
+    "symbol": "BTCUSDT",
+    "side": "BUY",
+    "type": "MARKET",
+    "quantity": 1
+}
+

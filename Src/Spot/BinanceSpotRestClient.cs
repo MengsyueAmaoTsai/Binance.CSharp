@@ -67,6 +67,30 @@ internal sealed class BinanceSpotRestClient(
         return await HandleResponseAsync(response);
     }
 
+    public async Task<Result> TestNewOrderAsync(string symbol, string side, string type, decimal quantity, CancellationToken cancellationToken = default)
+    {
+        var apiKey = "guVqJIzZ29JZx2BTv9VbxxOr7IehQIIRRXABm53rawtThH0XcD8EeyzUtMbIaQ92";
+        var secretKey = "BPwSSG45zE8ABiZ6Zm4t9gJFJMo19ExjBqOQlmLcOM5LgfyYP6V5biYrsUkZfXxm";
+
+        var queryString = $"symbol={symbol}&side={side}&type={type}&quantity={quantity}";
+        queryString += $"&recvWindow={RecvWindow}&timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        queryString += $"&signature={_signatureService.Sign(secretKey, queryString)}";
+
+        _logger.LogInformation("Final query string: {queryString}", queryString);
+
+        _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", apiKey);
+
+        var path = BinanceSpotApiRoutes.Trading.NewOrder;
+        _logger.LogInformation("Invoke path: {path}", path);
+
+        var response = await _httpClient.PostAsync(
+             BinanceSpotApiRoutes.Trading.TestNewOrder,
+             new StringContent(queryString, Encoding.UTF8, "application/x-www-form-urlencoded"),
+             cancellationToken);
+
+        return await HandleResponseAsync(response);
+    }
+
     private async Task<Result<TBinanceResponse>> HandleResponseAsync<TBinanceResponse>(HttpResponseMessage response)
     {
         var uri = response.RequestMessage?.RequestUri;
@@ -115,7 +139,7 @@ internal sealed class BinanceSpotRestClient(
             return Result.Failure(error);
         }
 
-        _logger.LogInformation($"Success send request: {uri}. Status: {response.StatusCode}");
+        _logger.LogInformation($"Success send request: {uri}. Status: {response.StatusCode}, {responseContent}");
 
         return Result.Success;
     }

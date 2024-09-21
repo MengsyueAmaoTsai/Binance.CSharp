@@ -21,7 +21,22 @@ public class SpotTradingController(
             request.Quantity,
             cancellationToken);
 
-        return Ok();
+        return HandleResult(result);
+    }
+
+    [HttpPost("api/spot/orders/test")]
+    public async Task<IActionResult> TestNewOrderAsync(
+        [FromBody] NewOrderRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _spotRestClient.TestNewOrderAsync(
+            request.Symbol,
+            request.Side,
+            request.Type,
+            request.Quantity,
+            cancellationToken);
+
+        return HandleResult(result);
     }
 }
 
