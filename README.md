@@ -9,5 +9,5 @@
 Run example api project
 
 ```bash
-dotnet run --project ./Samples/RichillCapital.Binance.Samples.Api
+dotnet run --project ./Samples/RichillCapital.Binance.Samples.Api --environment <Environment>
 ```
