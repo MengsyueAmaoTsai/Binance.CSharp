@@ -2,12 +2,14 @@ using RichillCapital.Binance.Spot;
 using RichillCapital.Binance.UsdMargined;
 using RichillCapital.Binance.Margin;
 using RichillCapital.Binance.Shared;
+using RichillCapital.Binance.Samples.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.WebHost.UseCustomLogger();
+
 builder.Services.AddControllers();
+builder.Services.AddSwaggerGen();
 
 // Add binance services
 builder.Services.AddBinanceSignatureService();
@@ -20,7 +22,6 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
 app.MapControllers();
 
 await app.RunAsync();
