@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Binance.Spot;
-using RichillCapital.SharedKernel.Monads;
 
 namespace RichillCapital.Binance.Samples.Api.Controllers;
 
 [ApiController]
 public class SpotGeneralController(
     IBinanceSpotRestClient _spotRestClient) :
-    ControllerBase
+    BinanceController
 {
     [HttpGet("api/spot/ping")]
     public async Task<IActionResult> PingAsync(CancellationToken cancellationToken = default)
@@ -30,10 +29,4 @@ public class SpotGeneralController(
         var result = await _spotRestClient.GetExchangeInfoAsync(cancellationToken);
         return HandleResult(result);
     }
-
-    private IActionResult HandleResult(Result result) =>
-        result.IsFailure ? BadRequest(result) : NoContent();
-
-    private IActionResult HandleResult<T>(Result<T> result) =>
-        result.IsFailure ? BadRequest(result) : Ok(result.Value);
 }
