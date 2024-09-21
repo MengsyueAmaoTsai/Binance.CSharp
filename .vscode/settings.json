@@ -1,4 +1,4 @@
 {
   "dotnet.defaultSolution": "./RichillCapital.Binance.sln",
-  "cSpell.words": ["hmac", "HMACSHA"]
+  "cSpell.words": ["hmac", "HMACSHA", "Newtonsoft"]
 }

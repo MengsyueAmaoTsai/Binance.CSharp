@@ -1,7 +1,10 @@
+using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 
 using Microsoft.Extensions.Logging;
+
+using Newtonsoft.Json;
 
 using RichillCapital.Binance.Spot.Contracts;
 using RichillCapital.SharedKernel;
@@ -20,16 +23,7 @@ internal sealed class BinanceSpotRestClient(
         var path = BinanceSpotApiRoutes.General.Ping;
         var response = await _httpClient.GetAsync(path);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            _logger.LogError("Request {path} failed. Status: {status}", path, response.StatusCode);
-
-            return Result.Failure(Error.Unexpected($"Request {path} failed. Status: {response.StatusCode}"));
-        }
-
-        _logger.LogInformation($"Success send request: {path}. Status: {response.StatusCode}");
-
-        return Result.Success;
+        return await HandleResponseAsync(response);
     }
 
     public async Task<Result<BinanceServerTimeResponse>> GetServerTimeAsync(CancellationToken cancellationToken = default)
@@ -64,35 +58,79 @@ internal sealed class BinanceSpotRestClient(
              new StringContent(queryString, Encoding.UTF8, "application/x-www-form-urlencoded"),
              cancellationToken);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            _logger.LogError("Request {path} failed. Status: {status}", path, response.StatusCode);
-
-            return Result.Failure(Error.Unexpected($"Request {path} failed. Status: {response.StatusCode}"));
-        }
-
-        _logger.LogInformation($"Success send request: {path}. Status: {response.StatusCode}");
-
-        return Result.Success;
+        return await HandleResponseAsync(response);
     }
 
     private async Task<Result<TBinanceResponse>> HandleResponseAsync<TBinanceResponse>(HttpResponseMessage response)
     {
         var uri = response.RequestMessage?.RequestUri;
+        var responseContent = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
         {
             _logger.LogError(
-                "Request {path} failed. Status: {status}",
+                "Request {path} failed. Status: {status}. Content: {content}",
                 uri,
-                response.StatusCode);
+                response.StatusCode,
+                responseContent);
 
-            return Result<TBinanceResponse>.Failure(Error.Unexpected($"Request {uri} failed. Status: {response.StatusCode}"));
+            var errorResponse = JsonConvert.DeserializeObject<BinanceErrorResponse>(responseContent);
+
+            var error = response switch
+            {
+                { StatusCode: HttpStatusCode.BadRequest } => Error.Invalid(errorResponse!.Code.ToString(), errorResponse!.Message),
+                { StatusCode: HttpStatusCode.Unauthorized } => Error.Unauthorized(errorResponse!.Code.ToString(), errorResponse!.Message),
+                { StatusCode: HttpStatusCode.Forbidden } => Error.Forbidden(errorResponse!.Code.ToString(), errorResponse!.Message),
+                { StatusCode: HttpStatusCode.NotFound } => Error.NotFound(errorResponse!.Code.ToString(), errorResponse!.Message),
+                { StatusCode: HttpStatusCode.Conflict } => Error.Conflict(errorResponse!.Code.ToString(), errorResponse!.Message),
+                { StatusCode: HttpStatusCode.InternalServerError } => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message),
+                _ => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message)
+            };
+
+            _logger.LogInformation("Transformed error response: {errorResponse}", errorResponse);
+
+            return Result<TBinanceResponse>.Failure(error);
         }
 
         _logger.LogInformation($"Success send request: {uri}. Status: {response.StatusCode}");
         var binanceResponse = await response.Content.ReadFromJsonAsync<TBinanceResponse>();
 
         return Result<TBinanceResponse>.With(binanceResponse!);
+    }
+
+    private async Task<Result> HandleResponseAsync(HttpResponseMessage response)
+    {
+        var uri = response.RequestMessage?.RequestUri;
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogError(
+                "Request {path} failed. Status: {status}. Content: {content}",
+                uri,
+                response.StatusCode,
+                responseContent);
+
+            var errorResponse = JsonConvert.DeserializeObject<BinanceErrorResponse>(responseContent);
+
+            var error = response switch
+            {
+                { StatusCode: HttpStatusCode.BadRequest } => Error.Invalid(errorResponse!.Code.ToString(), errorResponse!.Message),
+                { StatusCode: HttpStatusCode.Unauthorized } => Error.Unauthorized(errorResponse!.Code.ToString(), errorResponse!.Message),
+                { StatusCode: HttpStatusCode.Forbidden } => Error.Forbidden(errorResponse!.Code.ToString(), errorResponse!.Message),
+                { StatusCode: HttpStatusCode.NotFound } => Error.NotFound(errorResponse!.Code.ToString(), errorResponse!.Message),
+                { StatusCode: HttpStatusCode.Conflict } => Error.Conflict(errorResponse!.Code.ToString(), errorResponse!.Message),
+                { StatusCode: HttpStatusCode.InternalServerError } => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message),
+                _ => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message)
+            };
+
+            _logger.LogInformation("Transformed error response: {errorResponse}", errorResponse);
+
+            return Result.Failure(error);
+        }
+
+        _logger.LogInformation($"Success send request: {uri}. Status: {response.StatusCode}");
+
+        return Result.Success;
     }
 }
