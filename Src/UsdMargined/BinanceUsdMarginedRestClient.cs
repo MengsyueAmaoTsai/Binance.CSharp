@@ -45,6 +45,7 @@ internal sealed class BinanceUsdMarginedRestClient(
         _logger.LogInformation("Final query string: {queryString}", queryString);
 
         _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", ApiKey);
+        _logger.LogInformation("Apply API key: {apiKey}", ApiKey);
 
         var path = "fapi/v1/order";
         _logger.LogInformation("Invoke path: {path}", path);
