@@ -1,17 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
 
-using RichillCapital.Binance.UsdM;
+using RichillCapital.Binance.Margin;
 
 namespace RichillCapital.Binance.Samples.Api.Controllers;
 
 [ApiController]
-public class UsdMTradeController(
-    IBinanceUsdMRestClient _restClient) :
+public class MarginTradeController(
+    IBinanceMarginRestClient _restClient) :
     BinanceController
 {
-    [HttpPost("api/usd-m/orders")]
+    [HttpPost("api/margin/orders")]
     public async Task<IActionResult> NewOrderAsync(
-        [FromBody] UsdMNewOrderRequest request,
+        [FromBody] MarginNewOrderRequest request,
         CancellationToken cancellationToken = default)
     {
         var result = await _restClient.NewOrderAsync(
@@ -25,7 +25,7 @@ public class UsdMTradeController(
     }
 }
 
-public sealed record UsdMNewOrderRequest
+public sealed record MarginNewOrderRequest
 {
     public required string Symbol { get; init; }
     public required string Side { get; init; }

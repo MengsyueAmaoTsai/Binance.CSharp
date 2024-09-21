@@ -1,0 +1,12 @@
+@Localhost = https://localhost:20000
+
+### New order
+POST {{Localhost}}/api/margin/orders
+Content-Type: application/json
+
+{
+    "symbol": "BTCUSDT",
+    "side": "BUY",
+    "type": "MARKET",
+    "quantity": 1
+}

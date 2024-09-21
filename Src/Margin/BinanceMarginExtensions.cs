@@ -1,14 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace RichillCapital.Binance.Spot;
+namespace RichillCapital.Binance.Margin;
 
-public static class BinanceSpotExtensions
+public static class BinanceMarginExtensions
 {
-    public static IServiceCollection AddBinanceSpotRestClient(
+    public static IServiceCollection AddBinanceMarginRestClient(
         this IServiceCollection services,
         string baseAddress)
     {
-        services.AddHttpClient<IBinanceSpotRestClient, BinanceSpotRestClient>(client =>
+        services.AddHttpClient<IBinanceMarginRestClient, BinanceMarginRestClient>(client =>
         {
             client.BaseAddress = new Uri(baseAddress);
             client.DefaultRequestHeaders.Clear();

@@ -6,7 +6,7 @@ namespace RichillCapital.Binance.Samples.Api.Controllers;
 
 [ApiController]
 public class SpotTradingController(
-    IBinanceSpotRestClient _spotRestClient) :
+    IBinanceSpotRestClient _restClient) :
     BinanceController
 {
     [HttpPost("api/spot/orders")]
@@ -14,7 +14,7 @@ public class SpotTradingController(
         [FromBody] NewOrderRequest request,
         CancellationToken cancellationToken = default)
     {
-        var result = await _spotRestClient.NewOrderAsync(
+        var result = await _restClient.NewOrderAsync(
             request.Symbol,
             request.Side,
             request.Type,
@@ -29,7 +29,7 @@ public class SpotTradingController(
         [FromBody] NewOrderRequest request,
         CancellationToken cancellationToken = default)
     {
-        var result = await _spotRestClient.TestNewOrderAsync(
+        var result = await _restClient.TestNewOrderAsync(
             request.Symbol,
             request.Side,
             request.Type,
