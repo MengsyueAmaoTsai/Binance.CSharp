@@ -5,6 +5,8 @@ namespace RichillCapital.Binance.Spot.Errors;
 
 internal static class BinanceSpotErrors
 {
+    private const string ErrorCodePrefix = "BinanceSpot";
+
     internal static Error Create(ErrorType type, BinanceErrorResponse response) =>
         Create(type, ConvertErrorCode(response.Code), response.Message);
 
@@ -28,6 +30,6 @@ internal static class BinanceSpotErrors
             _ => throw new NotImplementedException($"{nameof(binanceErrorCode)} for {binanceErrorCode} is not defined."),
         };
 
-        return $"BinanceSpot.{suffix}";
+        return $"{ErrorCodePrefix}.{suffix}";
     }
 }

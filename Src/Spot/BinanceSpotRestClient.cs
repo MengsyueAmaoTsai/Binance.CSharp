@@ -5,8 +5,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 using RichillCapital.Binance.Spot.Contracts;
-using RichillCapital.Binance.Spot.Errors;
-using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monads;
 
 namespace RichillCapital.Binance.Spot;
