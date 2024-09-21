@@ -38,6 +38,8 @@ internal static class BinanceSpotErrors
             -1116 => "InvalidOrderType",
             -1117 => "InvalidSide",
             -1121 => "BadSymbol",
+
+            -2014 => "BadApiKeyFormat",
             -2015 => "RejectedMbxKey",
             -2019 => "MarginNotSufficient",
             -2020 => "UnableToFill",
