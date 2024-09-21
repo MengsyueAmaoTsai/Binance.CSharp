@@ -1,4 +1,5 @@
 using RichillCapital.Binance.Spot;
+using RichillCapital.Binance.UsdM;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ builder.Services.AddControllers();
 
 // Add binance services
 builder.Services.AddBinanceSpotRestClient("https://api.binance.com");
+builder.Services.AddBinanceUsdMRestClient("https://fapi.binance.com");
 
 var app = builder.Build();
 

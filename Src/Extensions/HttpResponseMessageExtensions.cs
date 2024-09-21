@@ -6,7 +6,7 @@ using RichillCapital.Binance.Spot.Contracts;
 using RichillCapital.Binance.Spot.Errors;
 using RichillCapital.SharedKernel;
 
-namespace RichillCapital.Binance.Spot;
+namespace RichillCapital.Binance.Extensions;
 
 internal static class HttpResponseMessageExtensions
 {

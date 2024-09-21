@@ -26,7 +26,9 @@ internal static class BinanceSpotErrors
     {
         var suffix = binanceErrorCode switch
         {
-            -2010 => "NewOrderRejected",
+            -2010 => "NewOrderRejected", // SPOT
+
+            -2019 => "MarginNotSufficient", // USD-M
             _ => throw new NotImplementedException($"{nameof(binanceErrorCode)} for {binanceErrorCode} is not defined."),
         };
 

@@ -3,10 +3,10 @@ using System.Text;
 
 using Microsoft.Extensions.Logging;
 
-namespace RichillCapital.Binance.Spot;
+namespace RichillCapital.Binance.Authentication;
 
-internal sealed class BinanceSpotSignatureService(
-    ILogger<BinanceSpotSignatureService> _logger)
+internal sealed class BinanceSignatureService(
+    ILogger<BinanceSignatureService> _logger)
 {
     internal string Sign(string secretKey, string queryString)
     {

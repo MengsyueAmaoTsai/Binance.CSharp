@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
+using RichillCapital.Binance.Authentication;
+
 namespace RichillCapital.Binance.Spot;
 
 public static class BinanceSpotExtensions
@@ -8,7 +10,7 @@ public static class BinanceSpotExtensions
         this IServiceCollection services,
         string baseAddress)
     {
-        services.AddTransient<BinanceSpotSignatureService>();
+        services.AddTransient<BinanceSignatureService>();
 
         services.AddHttpClient<IBinanceSpotRestClient, BinanceSpotRestClient>(client =>
         {

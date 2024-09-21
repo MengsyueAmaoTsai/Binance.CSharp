@@ -6,41 +6,20 @@ using Newtonsoft.Json;
 
 using RichillCapital.Binance.Authentication;
 using RichillCapital.Binance.Extensions;
-using RichillCapital.Binance.Spot.Contracts;
 using RichillCapital.SharedKernel.Monads;
 
-namespace RichillCapital.Binance.Spot;
+namespace RichillCapital.Binance.UsdM;
 
-internal sealed class BinanceSpotRestClient(
-    ILogger<BinanceSpotRestClient> _logger,
+internal sealed class BinanceUsdMRestClient(
+    ILogger<BinanceUsdMRestClient> _logger,
     HttpClient _httpClient,
     BinanceSignatureService _signatureService) :
-    IBinanceSpotRestClient
+    IBinanceUsdMRestClient
 {
     private const string ApiKey = "guVqJIzZ29JZx2BTv9VbxxOr7IehQIIRRXABm53rawtThH0XcD8EeyzUtMbIaQ92";
     private const string SecretKey = "BPwSSG45zE8ABiZ6Zm4t9gJFJMo19ExjBqOQlmLcOM5LgfyYP6V5biYrsUkZfXxm";
 
     private const int RecvWindow = 60000;
-
-    public async Task<Result> PingAsync(CancellationToken cancellationToken = default)
-    {
-        var path = BinanceSpotApiRoutes.General.Ping;
-        var response = await _httpClient.GetAsync(path);
-
-        return await HandleResponseAsync(response);
-    }
-
-    public async Task<Result<BinanceServerTimeResponse>> GetServerTimeAsync(CancellationToken cancellationToken = default)
-    {
-        var response = await _httpClient.GetAsync(BinanceSpotApiRoutes.General.ServerTime);
-        return await HandleResponseAsync<BinanceServerTimeResponse>(response);
-    }
-
-    public async Task<Result<BinanceExchangeInfoResponse>> GetExchangeInfoAsync(CancellationToken cancellationToken = default)
-    {
-        var response = await _httpClient.GetAsync(BinanceSpotApiRoutes.General.ExchangeInfo);
-        return await HandleResponseAsync<BinanceExchangeInfoResponse>(response);
-    }
 
     public async Task<Result> NewOrderAsync(
         string symbol,
@@ -57,32 +36,11 @@ internal sealed class BinanceSpotRestClient(
 
         _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", ApiKey);
 
-        var path = BinanceSpotApiRoutes.Trading.NewOrder;
+        var path = "fapi/v1/order";
         _logger.LogInformation("Invoke path: {path}", path);
 
         var response = await _httpClient.PostAsync(
-             BinanceSpotApiRoutes.Trading.NewOrder,
-             new StringContent(queryString, Encoding.UTF8, "application/x-www-form-urlencoded"),
-             cancellationToken);
-
-        return await HandleResponseAsync(response);
-    }
-
-    public async Task<Result> TestNewOrderAsync(string symbol, string side, string type, decimal quantity, CancellationToken cancellationToken = default)
-    {
-        var queryString = $"symbol={symbol}&side={side}&type={type}&quantity={quantity}";
-        queryString += $"&recvWindow={RecvWindow}&timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
-        queryString += $"&signature={_signatureService.Sign(SecretKey, queryString)}";
-
-        _logger.LogInformation("Final query string: {queryString}", queryString);
-
-        _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", ApiKey);
-
-        var path = BinanceSpotApiRoutes.Trading.NewOrder;
-        _logger.LogInformation("Invoke path: {path}", path);
-
-        var response = await _httpClient.PostAsync(
-             BinanceSpotApiRoutes.Trading.TestNewOrder,
+             path,
              new StringContent(queryString, Encoding.UTF8, "application/x-www-form-urlencoded"),
              cancellationToken);
 
