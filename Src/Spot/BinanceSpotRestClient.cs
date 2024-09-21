@@ -1,4 +1,3 @@
-using System.Net;
 using System.Text;
 
 using Microsoft.Extensions.Logging;
@@ -82,17 +81,7 @@ internal sealed class BinanceSpotRestClient(
                 responseContent);
 
             var errorResponse = JsonConvert.DeserializeObject<BinanceErrorResponse>(responseContent);
-
-            var error = response switch
-            {
-                { StatusCode: HttpStatusCode.BadRequest } => Error.Invalid(errorResponse!.Code.ToString(), errorResponse!.Message),
-                { StatusCode: HttpStatusCode.Unauthorized } => Error.Unauthorized(errorResponse!.Code.ToString(), errorResponse!.Message),
-                { StatusCode: HttpStatusCode.Forbidden } => Error.Forbidden(errorResponse!.Code.ToString(), errorResponse!.Message),
-                { StatusCode: HttpStatusCode.NotFound } => Error.NotFound(errorResponse!.Code.ToString(), errorResponse!.Message),
-                { StatusCode: HttpStatusCode.Conflict } => Error.Conflict(errorResponse!.Code.ToString(), errorResponse!.Message),
-                { StatusCode: HttpStatusCode.InternalServerError } => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message),
-                _ => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message)
-            };
+            var error = CreateError(response.GetErrorType(), errorResponse!);
 
             _logger.LogError("Transformed {error}", error);
 
@@ -119,30 +108,7 @@ internal sealed class BinanceSpotRestClient(
                 responseContent);
 
             var errorResponse = JsonConvert.DeserializeObject<BinanceErrorResponse>(responseContent);
-
-            var errorType = response switch
-            {
-                { StatusCode: HttpStatusCode.BadRequest } => ErrorType.Validation,
-                { StatusCode: HttpStatusCode.Unauthorized } => ErrorType.Unauthorized,
-                { StatusCode: HttpStatusCode.Forbidden } => ErrorType.Forbidden,
-                { StatusCode: HttpStatusCode.NotFound } => ErrorType.NotFound,
-                { StatusCode: HttpStatusCode.Conflict } => ErrorType.Conflict,
-                { StatusCode: HttpStatusCode.InternalServerError } => ErrorType.Unexpected,
-                _ => ErrorType.Unexpected,
-            };
-
-            // var error = response switch
-            // {
-            //     { StatusCode: HttpStatusCode.BadRequest } => Error.Invalid(errorResponse!.Code.ToString(), errorResponse!.Message),
-            //     { StatusCode: HttpStatusCode.Unauthorized } => Error.Unauthorized(errorResponse!.Code.ToString(), errorResponse!.Message),
-            //     { StatusCode: HttpStatusCode.Forbidden } => Error.Forbidden(errorResponse!.Code.ToString(), errorResponse!.Message),
-            //     { StatusCode: HttpStatusCode.NotFound } => Error.NotFound(errorResponse!.Code.ToString(), errorResponse!.Message),
-            //     { StatusCode: HttpStatusCode.Conflict } => Error.Conflict(errorResponse!.Code.ToString(), errorResponse!.Message),
-            //     { StatusCode: HttpStatusCode.InternalServerError } => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message),
-            //     _ => Error.Unexpected(errorResponse!.Code.ToString(), errorResponse!.Message)
-            // };
-
-            var error = CreateError(errorType, errorResponse!);
+            var error = CreateError(response.GetErrorType(), errorResponse!);
 
             _logger.LogError("Transformed {error}", error);
 
