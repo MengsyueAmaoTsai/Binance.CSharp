@@ -4,6 +4,17 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <!-- Package Information -->
+    <PackageId>RichillCapital.Binance</PackageId>
+    <Version>0.0.0.0</Version>
+    <Description>Binance SDK</Description>
+    <Authors>Mengsyue Amao Tsai</Authors>
+    <Company>Richill Capital</Company>
+    <Copyright>Copyright © 2024 Richill Capital</Copyright>    
+
+    <!-- Package Configuration -->
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>    
   </PropertyGroup>
 
   <ItemGroup>
