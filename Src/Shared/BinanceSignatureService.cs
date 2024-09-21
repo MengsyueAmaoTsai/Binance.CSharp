@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace RichillCapital.Binance.Shared;
@@ -27,5 +28,15 @@ internal sealed class BinanceSignatureService(
             signature);
 
         return signature;
+    }
+}
+
+public static partial class BinanceExtensions
+{
+    public static IServiceCollection AddBinanceSignatureService(this IServiceCollection services)
+    {
+        services.AddTransient<BinanceSignatureService>();
+
+        return services;
     }
 }
