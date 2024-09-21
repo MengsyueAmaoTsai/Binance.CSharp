@@ -44,10 +44,16 @@ internal sealed class BinanceSpotRestClient(
         string type,
         CancellationToken cancellationToken = default)
     {
-        var apiKey = "";
-        var secretKey = "";
-        var queryString = $"symbol={symbol}&side={side}&type={type}&recvWindow=60000&timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        var apiKey = "guVqJIzZ29JZx2BTv9VbxxOr7IehQIIRRXABm53rawtThH0XcD8EeyzUtMbIaQ92";
+        var secretKey = "BPwSSG45zE8ABiZ6Zm4t9gJFJMo19ExjBqOQlmLcOM5LgfyYP6V5biYrsUkZfXxm";
+
+        var recvWindow = 5000;
+        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        var queryString = $"symbol={symbol}&side={side}&type={type}&recvWindow={recvWindow}&timestamp={timestamp}";
         queryString += $"&signature={_signatureService.Sign(queryString, secretKey)}";
+
+        _logger.LogInformation("Final query string: {queryString}", queryString);
+
         _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", apiKey);
 
         var path = BinanceSpotApiRoutes.Trading.NewOrder;
@@ -92,8 +98,8 @@ internal sealed class BinanceSpotRestClient(
             return Result<TBinanceResponse>.Failure(error);
         }
 
-        _logger.LogInformation($"Success send request: {uri}. Status: {response.StatusCode}");
-        var binanceResponse = await response.Content.ReadFromJsonAsync<TBinanceResponse>();
+        var binanceResponse = JsonConvert.DeserializeObject<TBinanceResponse>(responseContent);
+        _logger.LogInformation($"Success send request: {uri}. Status: {response.StatusCode}, Content: {binanceResponse}");
 
         return Result<TBinanceResponse>.With(binanceResponse!);
     }
