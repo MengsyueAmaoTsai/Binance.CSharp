@@ -15,4 +15,10 @@ public class UsdMarginedAccountController(
         var result = await _restClient.GetAccountBalanceAsync(cancellationToken);
         return HandleResult(result);
     }
+
+    [HttpGet("api/usd-m/assets-mode")]
+    public async Task<IActionResult> GetAssetsModeAsync(CancellationToken cancellationToken = default)
+    {
+        return Ok();
+    }
 }

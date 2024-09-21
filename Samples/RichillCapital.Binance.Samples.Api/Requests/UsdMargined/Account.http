@@ -3,3 +3,8 @@
 ### Get account balance
 GET {{Localhost}}/api/usd-m/balance
 
+### Get account
+GET {{Localhost}}/api/usd-m/account
+
+### Get account cnofiguration
+GET {{Localhost}}/api/usd-m/account-configuration

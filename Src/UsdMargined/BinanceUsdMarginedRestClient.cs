@@ -63,9 +63,12 @@ internal sealed class BinanceUsdMarginedRestClient(
         CancellationToken cancellationToken = default)
     {
         var path = "fapi/v3/balance";
-        _logger.LogInformation("Invoke path: {path}", path);
 
+        var queryString = $"recvWindow={RecvWindow}&timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        path += $"?{queryString}";
         _httpClient.DefaultRequestHeaders.Add("X-MBX-APIKEY", ApiKey);
+
+        _logger.LogInformation("Invoke path: {path}", path);
         var response = await _httpClient.GetAsync(path, cancellationToken);
 
         return await HandleResponseAsync<BinanceAccountBalanceResponse>(response, cancellationToken);
