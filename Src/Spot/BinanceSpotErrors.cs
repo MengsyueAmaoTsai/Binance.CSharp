@@ -26,11 +26,22 @@ internal static class BinanceSpotErrors
     {
         var suffix = binanceErrorCode switch
         {
+            -1000 => "Unknown",
+
             // SPOT
             -2010 => "NewOrderRejected",
 
             // USD-M
             -2019 => "MarginNotSufficient",
+            -2020 => "UnableToFill",
+            -2021 => "OrderWouldImmediatelyTrigger",
+            -2022 => "ReduceOnlyReject",
+            -2023 => "UserInLiquidation",
+            -2024 => "PositionNotSufficient",
+            -2025 => "MaxOpenOrderExceeded",
+            -2026 => "ReduceOnlyOrderTypeNotSupported",
+            -2027 => "MaxLeverageRatio",
+            -2028 => "MinLeverageRatio",
 
             // Margin
             -3003 => "NoOpenedMarginAccount",

@@ -16,6 +16,18 @@ internal sealed class BinanceUsdMarginedRestClient(
     BinanceSignatureService _signatureService) :
     IBinanceUsdMarginedRestClient
 {
+    private enum OrderResponseType
+    {
+        Ack = 1,
+        Result = 2,
+    }
+
+    private enum PositionSide
+    {
+        Long = 1,
+        Short = 2,
+    }
+
     private const string ApiKey = "guVqJIzZ29JZx2BTv9VbxxOr7IehQIIRRXABm53rawtThH0XcD8EeyzUtMbIaQ92";
     private const string SecretKey = "BPwSSG45zE8ABiZ6Zm4t9gJFJMo19ExjBqOQlmLcOM5LgfyYP6V5biYrsUkZfXxm";
 
@@ -28,7 +40,12 @@ internal sealed class BinanceUsdMarginedRestClient(
         decimal quantity,
         CancellationToken cancellationToken = default)
     {
-        var queryString = $"symbol={symbol}&side={side}&type={type}&quantity={quantity}";
+        var clientOrderId = Guid.NewGuid();
+        var responseType = OrderResponseType.Ack;
+        var positionSide = (side == "BUY" ? PositionSide.Long : PositionSide.Short).ToString().ToUpperInvariant();
+
+        var queryString = $"symbol={symbol}&side={side}&type={type}&quantity={quantity}&newClientOrderId={clientOrderId}&newOrderRespType={responseType}&positionSide={positionSide}";
+
         queryString += $"&recvWindow={RecvWindow}&timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
         queryString += $"&signature={_signatureService.Sign(SecretKey, queryString)}";
 
