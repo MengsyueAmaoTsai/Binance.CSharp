@@ -10,9 +10,20 @@ namespace RichillCapital.Binance.Extensions;
 
 internal static class HttpResponseMessageExtensions
 {
-    internal static async Task<Error> ToErrorAsync(this HttpResponseMessage httpResponse)
+    internal static async Task<TResponse> ReadAsAsync<TResponse>(
+        this HttpResponseMessage httpResponse,
+        CancellationToken cancellationToken = default)
     {
-        var content = await httpResponse.Content.ReadAsStringAsync();
+        var content = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+
+        return JsonConvert.DeserializeObject<TResponse>(content)!;
+    }
+
+    internal static async Task<Error> ReadAsErrorAsync(
+        this HttpResponseMessage httpResponse,
+        CancellationToken cancellationToken = default)
+    {
+        var content = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
 
         return BinanceSpotErrors.Create(
             httpResponse.GetErrorType(),

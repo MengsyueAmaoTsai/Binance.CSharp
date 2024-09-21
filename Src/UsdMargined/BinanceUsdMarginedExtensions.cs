@@ -8,8 +8,6 @@ public static class BinanceUsdMarginedExtensions
         this IServiceCollection services,
         string baseAddress)
     {
-        // services.AddTransient<BinanceSpotSignatureService>();
-
         services.AddHttpClient<IBinanceUsdMarginedRestClient, BinanceUsdMarginedRestClient>(client =>
         {
             client.BaseAddress = new Uri(baseAddress);
