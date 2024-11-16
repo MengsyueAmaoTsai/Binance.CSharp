@@ -19,11 +19,13 @@ public sealed class TimestampToDateTimeOffsetConverter :
 
         var timestamp = (long)reader.Value!;
 
-        return timestamp.ToString().Length == 10 ?
-            DateTimeOffset.FromUnixTimeSeconds(timestamp) :
-            timestamp.ToString().Length == 13 ?
-                DateTimeOffset.FromUnixTimeMilliseconds(timestamp) :
-                throw new JsonSerializationException($"Unexpected timestamp length: {timestamp.ToString().Length}");
+        return timestamp == 0 ? 
+            default : 
+            timestamp.ToString().Length == 10 ?
+                DateTimeOffset.FromUnixTimeSeconds(timestamp) :
+                timestamp.ToString().Length == 13 ?
+                    DateTimeOffset.FromUnixTimeMilliseconds(timestamp) :
+                    throw new JsonSerializationException($"Unexpected timestamp length: {timestamp.ToString().Length}");
     }
 
     public override void WriteJson(

@@ -2,6 +2,8 @@
 using Newtonsoft.Json;
 using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monads;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace RichillCapital.Binance.UsdM;
 
@@ -38,8 +40,12 @@ internal sealed class BinanceUsdMRestClient(
     public async Task<Result<BinanceAccountInformationResponse>> GetAccountInformationAsync(CancellationToken cancellationToken = default)
     {
         var path = "/fapi/v3/account";
+        
+        var queryString = $"timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        var signature = CreateSignature(queryString);
+        queryString += $"&signature={signature}";
 
-        var response = await _httpClient.GetAsync(path);
+        var response = await _httpClient.GetAsync($"{path}?{queryString}");
 
         return await HandleResponseAsync<BinanceAccountInformationResponse>(response, cancellationToken);
     }
@@ -48,7 +54,11 @@ internal sealed class BinanceUsdMRestClient(
     {
         var path = "/fapi/v3/balance";
 
-        var response = await _httpClient.GetAsync(path);
+        var queryString = $"timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        var signature = CreateSignature(queryString);
+        queryString += $"&signature={signature}";
+
+        var response = await _httpClient.GetAsync($"{path}?{queryString}");
 
         return await HandleResponseAsync<IEnumerable<BinanceAccountBalanceResponse>>(response, cancellationToken);
     }
@@ -58,6 +68,8 @@ internal sealed class BinanceUsdMRestClient(
         CancellationToken cancellationToken = default)
     {
         var content = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+
+        _logger.LogInformation("Response content: {content}", content);
 
         if (!httpResponse.IsSuccessStatusCode)
         {
@@ -83,5 +95,17 @@ internal sealed class BinanceUsdMRestClient(
             _logger.LogError("Failed to deserialize response: {Content}", content);
             return Result<TResponse>.Failure(Error.Unexpected("0", $"Failed to deserialize response. {ex}"));
         }
+    }
+
+    private static string CreateSignature(string queryString)
+    {
+        var currentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+        var secretKey = "BPwSSG45zE8ABiZ6Zm4t9gJFJMo19ExjBqOQlmLcOM5LgfyYP6V5biYrsUkZfXxm";
+
+        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secretKey));
+
+        var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(queryString));
+        return BitConverter.ToString(hash).Replace("-", "").ToLower();
     }
 }
