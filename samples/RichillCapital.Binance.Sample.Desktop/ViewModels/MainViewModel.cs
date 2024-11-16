@@ -109,7 +109,7 @@ public sealed partial class MainViewModel : ViewModel
 
         if (result.IsFailure)
         {
-            MessageBox.Show($"Failed on placing order: {result.Error.Message}");
+            _messageBoxService.ShowBinanceError(result.Error);
             return;
         }
 
@@ -124,7 +124,7 @@ public sealed partial class MainViewModel : ViewModel
         if (result.IsFailure)
         {
             ServerAvailable = false;
-            MessageBox.Show(result.Error.Message);
+            _messageBoxService.ShowBinanceError(result.Error);
             return;
         }
 
@@ -138,7 +138,7 @@ public sealed partial class MainViewModel : ViewModel
 
         if (result.IsFailure)
         {
-            MessageBox.Show(result.Error.Message);
+            _messageBoxService.ShowBinanceError(result.Error);
             return;
         }
 
@@ -151,7 +151,7 @@ public sealed partial class MainViewModel : ViewModel
 
         if (exchangeInfoResult.IsFailure)
         {
-            MessageBox.Show($"Failed to loading tradable instruments. {exchangeInfoResult.Error.Message}");
+            _messageBoxService.ShowBinanceError(exchangeInfoResult.Error);
             return;
         }
 
