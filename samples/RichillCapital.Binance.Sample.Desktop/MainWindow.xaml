@@ -20,72 +20,221 @@
         </Grid.RowDefinitions>
 
         <Menu Grid.Row="0">
-            <MenuItem Header="Features">
-                <MenuItem Header="Symbols" Command="{Binding ShowSymbolsWindowCommand}"/>
-                <MenuItem Header="Account info" Command="{Binding ShowAccountInfoWindowCommand}"/>
+            <MenuItem Header="File">
+                <MenuItem Header="Quit" Command="{Binding QuitCommand}"/>
             </MenuItem>
         </Menu>
 
         <ToolBar Grid.Row="1">
+            <Button Content="Instruments" Command="{Binding ShowSymbolsWindowCommand}"/>
+            <Button Content="Account" Command="{Binding ShowAccountInfoWindowCommand}"/>
         </ToolBar>
 
         <Grid Grid.Row="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-            <GroupBox 
-                Grid.Row="0" 
-                Grid.Column="0"
-                Header="Place order">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="5">
-                        <TextBlock Text="Symbol: " VerticalAlignment="Center" Width="100"/>
-                        <ComboBox 
-                            Width="200" 
-                            ItemsSource="{Binding Symbols}"
-                            SelectedItem="{Binding SelectedSymbol}"
-                            DisplayMemberPath="Symbol"/>
-                    </StackPanel>
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+                <!--Instrument selection-->
+                <ComboBox 
+                    Width="200"
+                    ItemsSource="{Binding Symbols}" 
+                    DisplayMemberPath="Symbol"
+                    SelectedItem="{Binding SelectedSymbol}"
+                    IsEditable="True"
+                    IsTextSearchEnabled="True"
+                    TextSearch.TextPath="Symbol"/>
+                
+                <!--Watch list-->
+                <DataGrid
+                    ItemsSource="{Binding Symbols}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}"/>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Pair}"/>
+                        <DataGridTextColumn Header="Type" Binding="{Binding ContractType}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Margin="5">
-                        <RadioButton Content="Market" />
-                        <RadioButton Content="Limit" />
-                        <RadioButton Content="Stop" />
-                        <RadioButton Content="Stop Limit" />
-                    </StackPanel>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Time and sales -->
+                <DataGrid>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Time" />
+                        <DataGridTextColumn Header="Bid" />
+                        <DataGridTextColumn Header="Ask" />
+                        <DataGridTextColumn Header="Last" />
+                        <DataGridTextColumn Header="Size" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                
+                <!--Order book-->
+            </Grid>
 
-                    <StackPanel Orientation="Horizontal" Margin="5">
-                        <RadioButton Content="Buy"/>
-                        <RadioButton Content="Sell"/>
-                    </StackPanel>
-                    
-                    <StackPanel Orientation="Horizontal" Margin="5">
-                        <TextBlock Text="Quantity: " VerticalAlignment="Center" Width="100"/>
-                        <TextBox Width="200" Text="{Binding Quantity}" />
-                    </StackPanel>
-                    
-                    <StackPanel Orientation="Horizontal" Margin="5">
-                        <Button Margin="5" Content="Submit" Command="{Binding PlaceOrderCommand}"/>
-                        <Button Margin="5" Content="Reset"/>
-                    </StackPanel>
-                </StackPanel>
-            </GroupBox>
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <!--Order pane-->
+                <GroupBox Header="Order Entry" Grid.Row="0" Margin="10">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Content="Market" />
+                            <RadioButton Content="Limit" />
+                            <RadioButton Content="Stop" />
+                            <RadioButton Content="Stop limit" />
+                        </StackPanel>
 
-            <DataGrid 
-                Grid.Row="1"
-                AutoGenerateColumns="False"
-                IsReadOnly="True"
-                ItemsSource="{Binding Logs}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Time" Binding="{Binding Time}"/>
-                    <DataGridTextColumn Header="Level" Binding="{Binding Level}"/>
-                    <DataGridTextColumn Header="Message" Binding="{Binding Message}"/>
-                </DataGrid.Columns>
-            </DataGrid>
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Content="Buy" />
+                            <RadioButton Content="Sell" />
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Quantity"/>
+                            <TextBox Text="{Binding Quantity}" />
+                        </StackPanel>
+
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Place order" Margin="5" Command="{Binding PlaceOrderCommand}"/>
+                                <Button Content="Reset" Margin="5" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <!--Instrument info -->
+                <GroupBox Header="Instrument Info" Grid.Row="1" Margin="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Symbol -->
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Symbol:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedSymbol.Symbol}" Margin="10,5"/>
+
+                        <!-- Pair -->
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Pair:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedSymbol.Pair}" Margin="10,5"/>
+
+                        <!-- Contract type -->
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Contract type:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedSymbol.ContractType}" Margin="10,5"/>
+                        
+                        <!--Required margin %-->
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Required margin %:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedSymbol.RequiredMarginPercent}" Margin="10,5"/>
+                        
+                        <!--Maintain margin %-->
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Maintain margin %:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedSymbol.MaintMarginPercent}" Margin="10,5"/>
+                        
+                        <!--Delivery date-->
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Delivery date:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding SelectedSymbol.DeliveryDate}" Margin="10,5"/>
+                        
+                        <!--On board date-->
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="On board date:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding SelectedSymbol.OnBoardDate}" Margin="10,5"/>
+                        
+                        <!--Status-->
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Status:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding SelectedSymbol.Status}" Margin="10,5"/>
+                        
+                        <!--Base asset-->
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Base asset:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding SelectedSymbol.BaseAsset}" Margin="10,5"/>
+                        
+                        <!--Quote asset-->
+                        <TextBlock Grid.Row="9" Grid.Column="0" Text="Quote asset:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="9" Grid.Column="1" Text="{Binding SelectedSymbol.QuoteAsset}" Margin="10,5"/>
+                        
+                        <!--Margin asset-->
+                        <TextBlock Grid.Row="10" Grid.Column="0" Text="Margin asset:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="10" Grid.Column="1" Text="{Binding SelectedSymbol.MarginAsset}" Margin="10,5"/>
+                        
+                        <!--Price precision-->
+                        <TextBlock Grid.Row="11" Grid.Column="0" Text="Price precision:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="11" Grid.Column="1" Text="{Binding SelectedSymbol.PricePrecision}" Margin="10,5"/>
+                        
+                        <!--Quantity precision-->
+                        <TextBlock Grid.Row="12" Grid.Column="0" Text="Quantity precision:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="12" Grid.Column="1" Text="{Binding SelectedSymbol.QuantityPrecision}" Margin="10,5"/>
+                        
+                        <!--Base asset precision-->
+                        <TextBlock Grid.Row="13" Grid.Column="0" Text="Base asset precision:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="13" Grid.Column="1" Text="{Binding SelectedSymbol.BaseAssetPrecision}" Margin="10,5"/>
+                        
+                        <!--Quote asset precision-->
+                        <TextBlock Grid.Row="14" Grid.Column="0" Text="Quote precision:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="14" Grid.Column="1" Text="{Binding SelectedSymbol.QuotePrecision}" Margin="10,5"/>
+                        
+                        <!--Underlying type-->
+                        <TextBlock Grid.Row="15" Grid.Column="0" Text="Underlying type:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="15" Grid.Column="1" Text="{Binding SelectedSymbol.UnderlyingType}" Margin="10,5"/>
+                        
+                        <!--Underlying sub type-->
+                        <TextBlock Grid.Row="16" Grid.Column="0" Text="Underlying sub type:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="16" Grid.Column="1" Text="{Binding SelectedSymbol.UnderlyingSubType}" Margin="10,5"/>
+
+                        <!--Settle plan-->
+                        <TextBlock Grid.Row="17" Grid.Column="0" Text="Settle plan:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="17" Grid.Column="1" Text="{Binding SelectedSymbol.SettlePlan}" Margin="10,5"/>
+                        
+                        <!--Trigger protect-->
+                        <TextBlock Grid.Row="18" Grid.Column="0" Text="Trigger protect:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="18" Grid.Column="1" Text="{Binding SelectedSymbol.TriggerProtect}" Margin="10,5"/>
+                        
+                        <!--Liquidation fee-->
+                        <TextBlock Grid.Row="19" Grid.Column="0" Text="Liquidation fee:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="19" Grid.Column="1" Text="{Binding SelectedSymbol.LiquidationFee}" Margin="10,5"/>
+                        
+                        <!--Market take bound-->
+                        <TextBlock Grid.Row="20" Grid.Column="0" Text="Market take bound:" FontWeight="Bold" Margin="0,5"/>
+                        <TextBlock Grid.Row="20" Grid.Column="1" Text="{Binding SelectedSymbol.MarketTakeBound}" Margin="10,5"/>
+                    </Grid>
+                </GroupBox>
+            </Grid>
         </Grid>
-
+        
         <StatusBar Grid.Row="3">
             <StatusBarItem>
                 <TextBlock Text="{Binding ServerAvailable}" />

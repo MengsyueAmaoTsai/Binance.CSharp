@@ -52,14 +52,28 @@ public sealed partial class MainViewModel : ViewModel
         await GetServerTimeAsync();
         await LoadTradableInstrumentsAsync();
 
-        InitializeOrderPanel();
+        if (Symbols.Count == 0)
+        {
+            return;
+        }
+
+        var defaultSymbol = Symbols.First();
+
+        SelectedSymbol = defaultSymbol;
     }
+
+    #region File menu commands
+    
+    [RelayCommand]
+    private void Quit() => Application.Current.Shutdown();
 
     [RelayCommand]
     private void ShowSymbolsWindow() => _windowService.ShowWindow<SymbolsWindow>();
 
     [RelayCommand]
     private void ShowAccountInfoWindow() => _windowService.ShowWindow<AccountInfoWindow>();
+    
+    #endregion
 
     [RelayCommand]
     private async Task PlaceOrderAsync()
@@ -76,7 +90,6 @@ public sealed partial class MainViewModel : ViewModel
             return;
         }
 
-        // Show confirmation dialog
         var isConfirmed = MessageBox.Show(
             $"Are you sure you want to place a market order for {Quantity} {SelectedSymbol.Symbol}?",
             "Confirmation",
@@ -153,21 +166,5 @@ public sealed partial class MainViewModel : ViewModel
         {
             Symbols.Add(symbol);
         }
-    }
-
-    private void InitializeOrderPanel()
-    {
-        if (Symbols.Count == 0)
-        {
-            return;
-        }
-
-        var defaultSymbol = Symbols.First();
-
-        SelectedSymbol = defaultSymbol;
-
-        var quantityTick = 1 / Math.Pow(10, defaultSymbol.QuantityPrecision);
-
-        Quantity = Convert.ToDecimal(quantityTick);
     }
 }
