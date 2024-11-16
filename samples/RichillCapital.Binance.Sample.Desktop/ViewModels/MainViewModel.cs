@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using RichillCapital.Binance.UsdM;
 using System.Windows;
 
@@ -12,6 +13,9 @@ public sealed partial class MainViewModel : ViewModel
     {
         _usdMRestClient = usdMRestClient;   
     }
+
+    [ObservableProperty]
+    private DateTimeOffset _serverTime;
 
     [RelayCommand]
     private async Task TestConnectivityAsync()
@@ -38,6 +42,6 @@ public sealed partial class MainViewModel : ViewModel
             return;
         }
 
-        MessageBox.Show($"Server time: {result.Value.ServerTime:yyyy-MM-dd HH:mm:ss.fff}");
+        ServerTime = result.Value.ServerTime;
     }
 }

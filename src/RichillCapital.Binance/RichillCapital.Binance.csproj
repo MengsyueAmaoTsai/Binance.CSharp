@@ -4,6 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <PackageId>RichillCapital.Binance</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Mengsyue Amao Tsai</Authors>
+    <Company>Richill Capital</Company>
+    <Description>Binance libraries for .NET</Description>
   </PropertyGroup>
 
   <ItemGroup>
