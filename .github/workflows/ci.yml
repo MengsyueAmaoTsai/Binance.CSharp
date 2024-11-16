@@ -1,0 +1,48 @@
+name: Binance CI
+
+on:
+  push:
+    branches:
+      - master
+      - dev
+
+  pull_request:
+    branches:
+      - master
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build the API application
+      run: dotnet build ./src/RichillCapital.Binance/RichillCapital.Binance.csproj -c Debug --no-restore
+
+    - name: Run tests
+      run: |
+        dotnet test ./tests/RichillCapital.Api.ArchitectureTests/RichillCapital.Api.ArchitectureTests.csproj -c Debug --no-restore --verbosity normal
+    
+    - name: Publish artifact
+      run: dotnet publish ./src/RichillCapital.Api/RichillCapital.Api.csproj -c Debug -o ./artifact --no-restore --no-build 
+  
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: RichillCapital.Api-0.0.0-${{ matrix.os }}-Debug
+        path: ./artifact     
+  
+  
