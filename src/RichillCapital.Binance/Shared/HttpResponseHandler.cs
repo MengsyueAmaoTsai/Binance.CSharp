@@ -13,15 +13,22 @@ internal sealed class HttpResponseHandler(
         CancellationToken cancellationToken = default)
     {
         var content = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
-
-        _logger.LogInformation("Response content: {content}", content);
+        _logger.LogInformation("Handling response content: {content}", content);
 
         if (!httpResponse.IsSuccessStatusCode)
         {
-            var error = await httpResponse.ReadAsAsync<BinanceErrorResponse>(cancellationToken)
-                .Match(
-                    res => Error.Unexpected(res.Code.ToString(), res.Message),
-                    error => error);
+            var errorResponseResult = await httpResponse.ReadAsAsync<BinanceErrorResponse>(cancellationToken);
+            
+            if (errorResponseResult.IsFailure)
+            {
+                return Result<TResponse>.Failure(errorResponseResult.Error);
+            }
+
+            var response = errorResponseResult.Value;
+
+            var error = Error.Unexpected(
+                response.Code.ToString(), 
+                response.Message);
 
             return Result<TResponse>.Failure(error);
         }
@@ -47,3 +54,4 @@ internal static class HttpResponseMessageExtensions
         }
     }
 }
+
