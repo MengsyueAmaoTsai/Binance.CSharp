@@ -1,6 +1,8 @@
-﻿namespace RichillCapital.Binance.Sample.Desktop.ViewModels
+﻿using CommunityToolkit.Mvvm.Input;
+
+namespace RichillCapital.Binance.Sample.Desktop.ViewModels;
+
+public interface IViewModel
 {
-    public interface IViewModel
-    {
-    }
+    IAsyncRelayCommand InitializeAsyncCommand { get; }
 }

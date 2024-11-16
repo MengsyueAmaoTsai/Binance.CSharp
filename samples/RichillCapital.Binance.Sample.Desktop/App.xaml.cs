@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RichillCapital.Binance.Sample.Desktop.Services;
 using RichillCapital.Binance.Sample.Desktop.ViewModels;
+using RichillCapital.Binance.Sample.Desktop.Views.Windows;
 using RichillCapital.Binance.UsdM;
 using System.Windows;
 
@@ -42,6 +44,8 @@ public sealed partial class App : Application
         {
             services.AddBinanceUsdM();
 
+            services.AddWindowService();
+
             services.AddViews();
             services.AddViewModels();
 
@@ -57,12 +61,16 @@ internal static class ServiceExtensions
     {
         services.AddSingleton<MainWindow>();
 
+        services.AddTransient<SymbolsWindow>();
+
         return services;
     }
 
     internal static IServiceCollection AddViewModels(this IServiceCollection services)
     {
         services.AddSingleton<MainViewModel>();
+
+        services.AddTransient<SymbolsViewModel>();
 
         return services;
     }

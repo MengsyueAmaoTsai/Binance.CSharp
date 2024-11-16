@@ -1,46 +1,61 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using RichillCapital.Binance.Sample.Desktop.Services;
+using RichillCapital.Binance.Sample.Desktop.Views.Windows;
 using RichillCapital.Binance.UsdM;
-using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Data;
 
 namespace RichillCapital.Binance.Sample.Desktop.ViewModels;
 
 public sealed partial class MainViewModel : ViewModel
 {
-    private readonly IBinanceUsdMRestClient _usdMRestClient;
+    private readonly IWindowService _windowService;
 
-    public MainViewModel(IBinanceUsdMRestClient usdMRestClient)
+    public MainViewModel(
+        IBinanceUsdMRestClient usdMRestClient,
+        IWindowService windowService)
+        : base(usdMRestClient)
     {
-        _usdMRestClient = usdMRestClient;   
-        
-        BindingOperations.EnableCollectionSynchronization(Symbols, new object());
+        _windowService = windowService;
     }
 
     [ObservableProperty]
     private DateTimeOffset _serverTime;
 
-    public ObservableCollection<BinanceSymbolResponse> Symbols { get; } = [];
+    [ObservableProperty]
+    private bool _serverAvailable;
+
+    protected override async Task InitializeAsync()
+    {
+        await TestConnectivityAsync();
+        await GetServerTimeAsync();
+    }
+
+    [RelayCommand]
+    private void ShowSymbolsWindow()
+    {
+        _windowService.ShowWindow<SymbolsWindow>();
+    }
 
     [RelayCommand]
     private async Task TestConnectivityAsync()
     {
-        var result = await _usdMRestClient.TestConnectivityAsync(default);
+        var result = await _binanceUsdMRestClient.TestConnectivityAsync(default);
 
         if (result.IsFailure)
         {
+            ServerAvailable = false;
             MessageBox.Show(result.Error.Message);
             return;
         }
 
-        MessageBox.Show("Connected!");
+        ServerAvailable = true;
     }
 
     [RelayCommand]
     private async Task GetServerTimeAsync()
     {
-        var result = await _usdMRestClient.GetServerTimeAsync(default);
+        var result = await _binanceUsdMRestClient.GetServerTimeAsync(default);
 
         if (result.IsFailure)
         {
@@ -49,26 +64,5 @@ public sealed partial class MainViewModel : ViewModel
         }
 
         ServerTime = result.Value.ServerTime;
-    }
-
-    [RelayCommand]
-    private async Task GetExchangeInfoAsync()
-    {
-        var result = await _usdMRestClient.GetExchangeInfoAsync(default);
-
-        if (result.IsFailure)
-        {
-            MessageBox.Show(result.Error.Message);
-            return;
-        }
-
-        Symbols.Clear();
-
-        var response = result.Value;
-        
-        foreach (var symbol in response.Symbols)
-        {
-            Symbols.Add(symbol);
-        }
     }
 }

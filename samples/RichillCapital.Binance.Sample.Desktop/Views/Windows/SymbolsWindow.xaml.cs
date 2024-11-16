@@ -1,11 +1,11 @@
 ﻿using RichillCapital.Binance.Sample.Desktop.ViewModels;
 using System.Windows;
 
-namespace RichillCapital.Binance.Sample.Desktop;
+namespace RichillCapital.Binance.Sample.Desktop.Views.Windows;
 
-public sealed partial class MainWindow : Window
+public sealed partial class SymbolsWindow : Window
 {
-    public MainWindow(MainViewModel viewModel)
+    public SymbolsWindow(SymbolsViewModel viewModel)
     {
         DataContext = viewModel;
         InitializeComponent();
@@ -18,7 +18,7 @@ public sealed partial class MainWindow : Window
     {
         base.OnInitialized(e);
 
-        if (DataContext is not IViewModel viewModel)
+        if (DataContext is not SymbolsViewModel viewModel)
         {
             return;
         }

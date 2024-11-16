@@ -15,55 +15,75 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel 
-            Grid.Row="0" 
-            Orientation="Horizontal">
-            <TextBlock Text="{Binding ServerTime}"/>
-        </StackPanel>
-        
-        <StackPanel 
-            Grid.Row="1"
-            Orientation="Horizontal">
-            <Button Content="Test connectivity" Command="{Binding TestConnectivityCommand}"/>
-            <Button Content="Get server time" Command="{Binding GetServerTimeCommand}"/>
-            <Button Content="Get exchange info" Command="{Binding GetExchangeInfoCommand}"/>
-        </StackPanel>
+        <Menu Grid.Row="0">
+            <MenuItem Header="Features">
+                <MenuItem Header="Symbols" Command="{Binding ShowSymbolsWindowCommand}"/>
+            </MenuItem>
+        </Menu>
 
-        <DataGrid 
-            Grid.Row="2"
-            AutoGenerateColumns="False"
-            IsReadOnly="True"
-            MaxHeight="500"
-            ScrollViewer.VerticalScrollBarVisibility="Auto"
-            ScrollViewer.HorizontalScrollBarVisibility="Auto"
-            ItemsSource="{Binding Symbols}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}"/>
-                <DataGridTextColumn Header="Pair" Binding="{Binding Pair}"/>
-                <DataGridTextColumn Header="Contract type" Binding="{Binding ContractType}"/>
-                <DataGridTextColumn Header="Delivery date" Binding="{Binding DeliveryDate}"/>
-                <DataGridTextColumn Header="On board date" Binding="{Binding OnBoardDate}"/>
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
-                <DataGridTextColumn Header="Maint margin %" Binding="{Binding MaintMarginPercent}"/>
-                <DataGridTextColumn Header="Required margin %" Binding="{Binding RequiredMarginPercent}"/>
-                <DataGridTextColumn Header="Base asset" Binding="{Binding BaseAsset}"/>
-                <DataGridTextColumn Header="Quote asset" Binding="{Binding QuoteAsset}"/>
-                <DataGridTextColumn Header="Margin asset" Binding="{Binding MarginAsset}"/>
-                <DataGridTextColumn Header="Price precision" Binding="{Binding PricePrecision}"/>
-                <DataGridTextColumn Header="Quantity precision" Binding="{Binding QuantityPrecision}"/>
-                <DataGridTextColumn Header="Underlying type" Binding="{Binding UnderlyingType}"/>
-                <DataGridTextColumn Header="Underlying sub type" Binding="{Binding UnderlyingSubType}"/>
-                <DataGridTextColumn Header="Settle plan" Binding="{Binding SettlePlan}"/>
-                <DataGridTextColumn Header="Trigger protect" Binding="{Binding TriggerProtect}"/>
-                <DataGridTextColumn Header="Filters" Binding="{Binding Filters}"/>
-                <DataGridTextColumn Header="Order type" Binding="{Binding OrderType}"/>
-                <DataGridTextColumn Header="Time in force" Binding="{Binding TimeInForce}"/>
-                <DataGridTextColumn Header="Liquidation fee" Binding="{Binding LiquidationFee}"/>
-                <DataGridTextColumn Header="Market take bound" Binding="{Binding MarketTakeBound}"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <ToolBar Grid.Row="1">
+        </ToolBar>
+
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel 
+                Grid.Row="0"
+                Orientation="Horizontal">
+                <Button Content="Test connectivity" Command="{Binding TestConnectivityCommand}"/>
+                <Button Content="Get server time" Command="{Binding GetServerTimeCommand}"/>
+                <Button Content="Get exchange info" Command="{Binding GetExchangeInfoCommand}"/>
+            </StackPanel>
+
+            <DataGrid 
+                Grid.Row="1"
+                AutoGenerateColumns="False"
+                IsReadOnly="True"
+                MaxHeight="500"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                ItemsSource="{Binding Symbols}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}"/>
+                    <DataGridTextColumn Header="Pair" Binding="{Binding Pair}"/>
+                    <DataGridTextColumn Header="Contract type" Binding="{Binding ContractType}"/>
+                    <DataGridTextColumn Header="Delivery date" Binding="{Binding DeliveryDate}"/>
+                    <DataGridTextColumn Header="On board date" Binding="{Binding OnBoardDate}"/>
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
+                    <DataGridTextColumn Header="Maint margin %" Binding="{Binding MaintMarginPercent}"/>
+                    <DataGridTextColumn Header="Required margin %" Binding="{Binding RequiredMarginPercent}"/>
+                    <DataGridTextColumn Header="Base asset" Binding="{Binding BaseAsset}"/>
+                    <DataGridTextColumn Header="Quote asset" Binding="{Binding QuoteAsset}"/>
+                    <DataGridTextColumn Header="Margin asset" Binding="{Binding MarginAsset}"/>
+                    <DataGridTextColumn Header="Price precision" Binding="{Binding PricePrecision}"/>
+                    <DataGridTextColumn Header="Quantity precision" Binding="{Binding QuantityPrecision}"/>
+                    <DataGridTextColumn Header="Underlying type" Binding="{Binding UnderlyingType}"/>
+                    <DataGridTextColumn Header="Underlying sub type" Binding="{Binding UnderlyingSubType}"/>
+                    <DataGridTextColumn Header="Settle plan" Binding="{Binding SettlePlan}"/>
+                    <DataGridTextColumn Header="Trigger protect" Binding="{Binding TriggerProtect}"/>
+                    <DataGridTextColumn Header="Filters" Binding="{Binding Filters}"/>
+                    <DataGridTextColumn Header="Order type" Binding="{Binding OrderType}"/>
+                    <DataGridTextColumn Header="Time in force" Binding="{Binding TimeInForce}"/>
+                    <DataGridTextColumn Header="Liquidation fee" Binding="{Binding LiquidationFee}"/>
+                    <DataGridTextColumn Header="Market take bound" Binding="{Binding MarketTakeBound}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <StatusBar Grid.Row="3">
+            <StatusBarItem>
+                <TextBlock Text="{Binding ServerAvailable}" />
+            </StatusBarItem>
+
+            <StatusBarItem>
+                <TextBlock Text="{Binding ServerTime}" />
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>
