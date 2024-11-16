@@ -44,4 +44,37 @@ public sealed partial class MainViewModel : ViewModel
 
         ServerTime = result.Value.ServerTime;
     }
+
+    [RelayCommand]
+    private async Task GetExchangeInfoAsync()
+    {
+        var result = await _usdMRestClient.GetExchangeInfoAsync(default);
+
+        if (result.IsFailure)
+        {
+            MessageBox.Show(result.Error.Message);
+            return;
+        }
+
+        var response = result.Value;
+        var message = "";
+
+        var firstSymbol = response.Symbols.FirstOrDefault();
+
+        if (firstSymbol is not null)
+        {
+            message = $"First symbol:\n";
+            message += $"Symbol: {firstSymbol.Symbol}\n";
+            message += $"Pair: {firstSymbol.Pair}\n";
+            message += $"Contract type: {firstSymbol.ContractType}\n";
+            message += $"Delivery date: {firstSymbol.DeliveryDate}\n";
+            message += $"On board date: {firstSymbol.OnBoardDate}\n";
+        }
+        else
+        {
+            message = "No symbols found";
+        }
+
+        MessageBox.Show(message);
+    }
 }

@@ -27,6 +27,14 @@ internal sealed class BinanceUsdMRestClient(
         return await HandleResponseAsync<object>(response, cancellationToken);
     }
 
+    public async Task<Result<BinanceExchangeInfoResponse>> GetExchangeInfoAsync(CancellationToken cancellationToken = default)
+    {
+        var path = "/fapi/v1/exchangeInfo";
+        var httpResponse = await _httpClient.GetAsync(path);
+
+        return await HandleResponseAsync<BinanceExchangeInfoResponse>(httpResponse, cancellationToken);
+    }
+
     private async Task<Result<TResponse>> HandleResponseAsync<TResponse>(
         HttpResponseMessage httpResponse,
         CancellationToken cancellationToken = default)
@@ -52,10 +60,10 @@ internal sealed class BinanceUsdMRestClient(
         {
             return Result<TResponse>.With(JsonConvert.DeserializeObject<TResponse>(content)!);
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
             _logger.LogError("Failed to deserialize response: {Content}", content);
-            return Result<TResponse>.Failure(Error.Unexpected("0", "Failed to deserialize response"));
+            return Result<TResponse>.Failure(Error.Unexpected("0", $"Failed to deserialize response. {ex}"));
         }
     }
 }

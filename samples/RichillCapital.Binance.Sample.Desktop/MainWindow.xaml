@@ -28,6 +28,7 @@
             Orientation="Horizontal">
             <Button Content="Test connectivity" Command="{Binding TestConnectivityCommand}"/>
             <Button Content="Get server time" Command="{Binding GetServerTimeCommand}"/>
+            <Button Content="Get exchange info" Command="{Binding GetExchangeInfoCommand}"/>
         </StackPanel>
     </Grid>
 </Window>
