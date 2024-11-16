@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using RichillCapital.Binance.Sample.Desktop.Models;
 using RichillCapital.Binance.Sample.Desktop.Services;
 using RichillCapital.Binance.Sample.Desktop.Views.Windows;
+using RichillCapital.Binance.Spot;
 using RichillCapital.Binance.UsdM;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -16,8 +17,9 @@ public sealed partial class MainViewModel : ViewModel
         IWindowService windowService,
         IDialogService dialogService,
         IMessageBoxService messageBoxService,
+        IBinanceSpotRestClient binanceSpotRestClient,
         IBinanceUsdMRestClient usdMRestClient)
-        : base(windowService, dialogService, messageBoxService, usdMRestClient)
+        : base(windowService, dialogService, messageBoxService, binanceSpotRestClient, usdMRestClient)
     {
         BindingOperations.EnableCollectionSynchronization(Logs, new object());
         BindingOperations.EnableCollectionSynchronization(Symbols, new object());
