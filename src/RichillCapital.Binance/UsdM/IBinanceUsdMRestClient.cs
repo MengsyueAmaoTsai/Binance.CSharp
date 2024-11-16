@@ -1,14 +1,12 @@
 ﻿using Newtonsoft.Json;
+using RichillCapital.Binance.Abstractions;
 using RichillCapital.Binance.Converters;
-using RichillCapital.Binance.Shared;
 using RichillCapital.SharedKernel.Monads;
 
 namespace RichillCapital.Binance.UsdM;
 
-public interface IBinanceUsdMRestClient
+public interface IBinanceUsdMRestClient : IBinanceRestClient
 {
-    Task<Result<object>> TestConnectivityAsync(CancellationToken cancellationToken = default);
-    Task<Result<BinanceServerTimeResponse>> GetServerTimeAsync(CancellationToken cancellationToken = default);
     Task<Result<BinanceExchangeInfoResponse>> GetExchangeInfoAsync(CancellationToken cancellationToken = default);
     Task<Result<BinanceAccountInformationResponse>> GetAccountInformationAsync(CancellationToken cancellationToken = default);
     Task<Result<IEnumerable<BinanceAccountBalanceResponse>>> GetAccountBalancesAsync(CancellationToken cancellationToken = default);

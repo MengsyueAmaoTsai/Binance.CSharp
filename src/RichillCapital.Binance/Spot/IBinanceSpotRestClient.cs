@@ -1,11 +1,9 @@
-﻿using RichillCapital.Binance.Shared;
+﻿using RichillCapital.Binance.Abstractions;
 using RichillCapital.SharedKernel.Monads;
 
 namespace RichillCapital.Binance.Spot;
 
-public interface IBinanceSpotRestClient
+public interface IBinanceSpotRestClient : IBinanceRestClient
 {
-    Task<Result<object>> TestConnectivityAsync(CancellationToken cancellationToken = default);
-    Task<Result<BinanceServerTimeResponse>> GetServerTimeAsync(CancellationToken cancellationToken = default);
     Task<Result<object>> GetExchangeInfoAsync(CancellationToken cancellationToken = default);
 }
