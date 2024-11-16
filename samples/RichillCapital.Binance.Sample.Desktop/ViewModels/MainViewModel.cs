@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using RichillCapital.Binance.Sample.Desktop.Services;
 using RichillCapital.Binance.Sample.Desktop.Views.Windows;
 using RichillCapital.Binance.UsdM;
+using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Data;
 
 namespace RichillCapital.Binance.Sample.Desktop.ViewModels;
 
@@ -17,6 +19,8 @@ public sealed partial class MainViewModel : ViewModel
         : base(usdMRestClient)
     {
         _windowService = windowService;
+
+        BindingOperations.EnableCollectionSynchronization(Symbols, new object());
     }
 
     [ObservableProperty]
@@ -25,12 +29,18 @@ public sealed partial class MainViewModel : ViewModel
     [ObservableProperty]
     private bool _serverAvailable;
 
+    [ObservableProperty]
+    private BinanceSymbolResponse _selectedSymbol;
+
+    public ObservableCollection<BinanceSymbolResponse> Symbols { get; } = [];
+
+
     protected override async Task InitializeAsync()
     {
         await TestConnectivityAsync();
         await GetServerTimeAsync();
-        await GetAccountInformationAsync();
-        await GetAccountBalancesAsync();
+
+        await LoadTradableInstrumentsAsync();
     }
 
     [RelayCommand]
@@ -38,6 +48,12 @@ public sealed partial class MainViewModel : ViewModel
 
     [RelayCommand]
     private void ShowAccountInfoWindow() => _windowService.ShowWindow<AccountInfoWindow>();
+
+    [RelayCommand]
+    private async Task PlaceOrderAsync()
+    {
+        MessageBox.Show($"Place order for {SelectedSymbol}");
+    }
     
     [RelayCommand]
     private async Task TestConnectivityAsync()
@@ -68,25 +84,28 @@ public sealed partial class MainViewModel : ViewModel
         ServerTime = result.Value.ServerTime;
     }
 
-    private async Task GetAccountInformationAsync()
+    private async Task LoadTradableInstrumentsAsync()
     {
-        var result = await _binanceUsdMRestClient.GetAccountInformationAsync(default);
+        var exchangeInfoResult = await _binanceUsdMRestClient.GetExchangeInfoAsync(default);
 
-        if (result.IsFailure)
+        if (exchangeInfoResult.IsFailure)
         {
-            MessageBox.Show(result.Error.Message);
+            MessageBox.Show($"Failed to loading tradable instruments. {exchangeInfoResult.Error.Message}");
             return;
         }
-    }
 
-    private async Task GetAccountBalancesAsync()
-    {
-        var result = await _binanceUsdMRestClient.GetAccountBalancesAsync(default);
+        var exchangeInfo = exchangeInfoResult.Value;
 
-        if (result.IsFailure)
+        Symbols.Clear();
+
+        foreach (var symbol in exchangeInfo.Symbols)
         {
-            MessageBox.Show(result.Error.Message);
-            return;
+            Symbols.Add(symbol);
+        }
+
+        if (Symbols.Count > 0)
+        {
+            SelectedSymbol = Symbols.First();
         }
     }
 }
