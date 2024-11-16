@@ -9,6 +9,8 @@ public interface IBinanceUsdMRestClient
     Task<Result<object>> TestConnectivityAsync(CancellationToken cancellationToken = default);
     Task<Result<BinanceServerTimeResponse>> GetServerTimeAsync(CancellationToken cancellationToken = default);
     Task<Result<BinanceExchangeInfoResponse>> GetExchangeInfoAsync(CancellationToken cancellationToken = default);
+    Task<Result<BinanceAccountInformationResponse>> GetAccountInformationAsync(CancellationToken cancellationToken = default);
+    Task<Result<IEnumerable<BinanceAccountBalanceResponse>>> GetAccountBalancesAsync(CancellationToken cancellationToken = default);
 }
 
 public sealed record BinanceServerTimeResponse
@@ -88,4 +90,23 @@ public sealed record BinanceRateLimitResponse
     public required int Limit { get; init; }
 
     public required string RateLimitType { get; init; }
+}
+
+public sealed record BinanceAccountBalanceResponse
+{
+    public required string AccountAlias { get; init; }
+    public required string Asset { get; init; }
+    public required decimal Balance { get; init; }
+    public required decimal CrossWalletBalance { get; init; }
+    public required decimal CrossPnL { get; init; }
+    public required decimal AvailableBalance { get; init; }
+    public required decimal MaxWithdrawAmount { get; init; }
+    public required bool MarginAvailable { get; init; }
+
+    [JsonConverter(typeof(TimestampToDateTimeOffsetConverter))]
+    public required DateTimeOffset UpdateTime { get; init; }
+}
+
+public sealed record BinanceAccountInformationResponse
+{
 }

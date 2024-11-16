@@ -29,6 +29,7 @@ public sealed partial class MainViewModel : ViewModel
     {
         await TestConnectivityAsync();
         await GetServerTimeAsync();
+        await GetAccountInformationAsync();
     }
 
     [RelayCommand]
@@ -64,5 +65,18 @@ public sealed partial class MainViewModel : ViewModel
         }
 
         ServerTime = result.Value.ServerTime;
+    }
+
+    private async Task GetAccountInformationAsync()
+    {
+        var result = await _binanceUsdMRestClient.GetAccountInformationAsync(default);
+
+        if (result.IsFailure)
+        {
+            MessageBox.Show(result.Error.Message);
+            return;
+        }
+
+        MessageBox.Show($"{result.Value}");
     }
 }
