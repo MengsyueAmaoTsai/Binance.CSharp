@@ -12,6 +12,13 @@
         Height="450" 
         Width="800">
     <Grid>
-        <Button Content="Test connectivity" Command="{Binding TestConnectivityCommand}"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <StackPanel Orientation="Horizontal">
+            <Button Content="Test connectivity" Command="{Binding TestConnectivityCommand}"/>
+            <Button Content="Get server time" Command="{Binding GetServerTimeCommand}"/>
+        </StackPanel>
     </Grid>
 </Window>

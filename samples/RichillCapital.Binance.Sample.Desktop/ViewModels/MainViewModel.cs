@@ -31,5 +31,13 @@ public sealed partial class MainViewModel : ViewModel
     private async Task GetServerTimeAsync()
     {
         var result = await _usdMRestClient.GetServerTimeAsync(default);
+
+        if (result.IsFailure)
+        {
+            MessageBox.Show(result.Error.Message);
+            return;
+        }
+
+        MessageBox.Show($"Server time: {result.Value.ServerTime:yyyy-MM-dd HH:mm:ss.fff}");
     }
 }
