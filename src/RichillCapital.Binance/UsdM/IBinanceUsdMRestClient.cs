@@ -11,6 +11,19 @@ public interface IBinanceUsdMRestClient
     Task<Result<BinanceExchangeInfoResponse>> GetExchangeInfoAsync(CancellationToken cancellationToken = default);
     Task<Result<BinanceAccountInformationResponse>> GetAccountInformationAsync(CancellationToken cancellationToken = default);
     Task<Result<IEnumerable<BinanceAccountBalanceResponse>>> GetAccountBalancesAsync(CancellationToken cancellationToken = default);
+    Task<Result<NewOrderResponse>> NewOrderAsync(NewOrderRequest request, CancellationToken cancellationToken = default);
+}
+
+public sealed record NewOrderRequest
+{
+    public required string Symbol { get; init; }
+    public required string Side { get; init; } // BUY or SELL
+    public required string Type { get; init; } // MARKET / LIMIT / STOP / TAKE_PROFIT / STOP_MARKET / TAKE_PROFIT_MARKET / TRAILING_STOP_MARKET
+    public required decimal Quantity { get; init; }
+}
+
+public sealed record NewOrderResponse
+{
 }
 
 public sealed record BinanceServerTimeResponse

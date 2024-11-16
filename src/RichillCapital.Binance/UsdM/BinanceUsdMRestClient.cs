@@ -63,6 +63,25 @@ internal sealed class BinanceUsdMRestClient(
         return await HandleResponseAsync<IEnumerable<BinanceAccountBalanceResponse>>(response, cancellationToken);
     }
 
+    public async Task<Result<NewOrderResponse>> NewOrderAsync(NewOrderRequest request, CancellationToken cancellationToken = default)
+    {
+        var path = "/fapi/v1/order";
+
+        var queryString = $"timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        queryString += $"&symbol={request.Symbol}";
+        queryString += $"&side={request.Side}";
+        queryString += $"&type={request.Type}";
+        queryString += $"&quantity={request.Quantity}";
+
+        var signature = CreateSignature(queryString);
+        queryString += $"&signature={signature}";
+
+
+        var response = await _httpClient.PostAsync($"{path}?{queryString}", null);
+
+        return await HandleResponseAsync<NewOrderResponse>(response, cancellationToken);
+    }
+
     private async Task<Result<TResponse>> HandleResponseAsync<TResponse>(
         HttpResponseMessage httpResponse,
         CancellationToken cancellationToken = default)

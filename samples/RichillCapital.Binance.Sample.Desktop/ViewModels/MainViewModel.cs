@@ -52,7 +52,29 @@ public sealed partial class MainViewModel : ViewModel
     [RelayCommand]
     private async Task PlaceOrderAsync()
     {
-        MessageBox.Show($"Place order for {SelectedSymbol}");
+        if (SelectedSymbol is null)
+        {
+            MessageBox.Show("Please select a symbol.");
+            return;
+        }
+
+        var result = await _binanceUsdMRestClient.NewOrderAsync(
+            new NewOrderRequest
+            {
+                Symbol = SelectedSymbol.Symbol,
+                Side = "BUY",
+                Type = "MARKET",
+                Quantity = 100,
+            }, 
+            default);
+
+        if (result.IsFailure)
+        {
+            MessageBox.Show($"Failed on placing order: {result.Error.Message}");
+            return;
+        }
+
+        MessageBox.Show($"Place order successfully. {result.Value}");
     }
     
     [RelayCommand]
