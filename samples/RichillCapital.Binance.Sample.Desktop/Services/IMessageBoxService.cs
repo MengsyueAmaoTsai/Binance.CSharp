@@ -12,9 +12,9 @@ public interface IMessageBoxService
 internal sealed class MessageBoxService : IMessageBoxService
 {
     public MessageBoxResult ShowBinanceError(Error error) => MessageBox.Show(
-        messageBoxText: error.Message, 
-        caption: "Binance Error", 
-        button: MessageBoxButton.OK, 
+        messageBoxText: error.Message,
+        caption: $"Binance Error - {error.Code}",
+        button: MessageBoxButton.OK,
         icon: MessageBoxImage.Error);
 }
 
