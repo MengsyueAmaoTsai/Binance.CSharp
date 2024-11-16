@@ -11,9 +11,10 @@ public sealed partial class SymbolsViewModel : ViewModel
 {
     public SymbolsViewModel(
         IWindowService windowService,
+        IDialogService dialogService,
         IMessageBoxService messageBoxService,
-        IBinanceUsdMRestClient binanceUsdMRestClient) 
-        : base(windowService, messageBoxService, binanceUsdMRestClient)
+        IBinanceUsdMRestClient binanceUsdMRestClient)
+        : base(windowService, dialogService, messageBoxService, binanceUsdMRestClient)
     {
         BindingOperations.EnableCollectionSynchronization(Symbols, new object());
     }

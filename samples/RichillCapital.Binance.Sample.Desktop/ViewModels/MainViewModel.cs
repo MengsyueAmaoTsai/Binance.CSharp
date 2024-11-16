@@ -14,9 +14,10 @@ public sealed partial class MainViewModel : ViewModel
 {
     public MainViewModel(
         IWindowService windowService,
+        IDialogService dialogService,
         IMessageBoxService messageBoxService,
         IBinanceUsdMRestClient usdMRestClient)
-        : base(windowService, messageBoxService ,usdMRestClient)
+        : base(windowService, dialogService, messageBoxService, usdMRestClient)
     {
         BindingOperations.EnableCollectionSynchronization(Logs, new object());
         BindingOperations.EnableCollectionSynchronization(Symbols, new object());
@@ -60,7 +61,7 @@ public sealed partial class MainViewModel : ViewModel
     }
 
     #region File menu commands
-    
+
     [RelayCommand]
     private void Quit() => Application.Current.Shutdown();
 
@@ -69,7 +70,7 @@ public sealed partial class MainViewModel : ViewModel
 
     [RelayCommand]
     private void ShowAccountInfoWindow() => _windowService.ShowWindow<AccountInfoWindow>();
-    
+
     #endregion
 
     [RelayCommand]

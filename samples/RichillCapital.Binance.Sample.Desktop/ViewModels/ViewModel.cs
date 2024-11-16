@@ -8,20 +8,23 @@ namespace RichillCapital.Binance.Sample.Desktop.ViewModels;
 public abstract partial class ViewModel : ObservableObject, IViewModel
 {
     protected readonly IWindowService _windowService;
+    protected readonly IDialogService _dialogService;
     protected readonly IMessageBoxService _messageBoxService;
     protected readonly IBinanceUsdMRestClient _binanceUsdMRestClient;
 
     protected ViewModel(
         IWindowService windowService,
+        IDialogService dialogService,
         IMessageBoxService messageBoxService,
         IBinanceUsdMRestClient binanceUsdMRestClient)
     {
         _windowService = windowService;
+        _dialogService = dialogService;
         _messageBoxService = messageBoxService;
         _binanceUsdMRestClient = binanceUsdMRestClient;
 
         InitializeAsyncCommand = new AsyncRelayCommand(
-            InitializeAsync, 
+            InitializeAsync,
             AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
     }
 

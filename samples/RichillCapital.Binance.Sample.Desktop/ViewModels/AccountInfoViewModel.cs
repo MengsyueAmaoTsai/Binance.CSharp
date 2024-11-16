@@ -9,9 +9,10 @@ public sealed partial class AccountInfoViewModel : ViewModel
 {
     public AccountInfoViewModel(
         IWindowService windowService,
+        IDialogService dialogService,
         IMessageBoxService messageBoxService,
-        IBinanceUsdMRestClient binanceUsdMRestClient) 
-        : base(windowService, messageBoxService, binanceUsdMRestClient)
+        IBinanceUsdMRestClient binanceUsdMRestClient)
+        : base(windowService, dialogService, messageBoxService, binanceUsdMRestClient)
     {
     }
 
@@ -23,7 +24,7 @@ public sealed partial class AccountInfoViewModel : ViewModel
     protected override async Task InitializeAsync()
     {
         var accountInfoResult = await _binanceUsdMRestClient.GetAccountInformationAsync(default);
-        
+
         if (accountInfoResult.IsFailure)
         {
             MessageBox.Show(accountInfoResult.Error.Message);
