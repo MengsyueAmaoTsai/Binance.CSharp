@@ -9,5 +9,8 @@ public sealed partial class MainWindow : Window
     {
         DataContext = viewModel;
         InitializeComponent();
+
+        Height = SystemParameters.PrimaryScreenHeight * 0.8;
+        Width = SystemParameters.PrimaryScreenWidth * 0.8;
     }
 }

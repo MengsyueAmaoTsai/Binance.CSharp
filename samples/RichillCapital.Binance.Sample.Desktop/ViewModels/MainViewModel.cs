@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RichillCapital.Binance.UsdM;
+using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Data;
 
 namespace RichillCapital.Binance.Sample.Desktop.ViewModels;
 
@@ -12,10 +14,14 @@ public sealed partial class MainViewModel : ViewModel
     public MainViewModel(IBinanceUsdMRestClient usdMRestClient)
     {
         _usdMRestClient = usdMRestClient;   
+        
+        BindingOperations.EnableCollectionSynchronization(Symbols, new object());
     }
 
     [ObservableProperty]
     private DateTimeOffset _serverTime;
+
+    public ObservableCollection<BinanceSymbolResponse> Symbols { get; } = [];
 
     [RelayCommand]
     private async Task TestConnectivityAsync()
@@ -56,25 +62,13 @@ public sealed partial class MainViewModel : ViewModel
             return;
         }
 
+        Symbols.Clear();
+
         var response = result.Value;
-        var message = "";
-
-        var firstSymbol = response.Symbols.FirstOrDefault();
-
-        if (firstSymbol is not null)
+        
+        foreach (var symbol in response.Symbols)
         {
-            message = $"First symbol:\n";
-            message += $"Symbol: {firstSymbol.Symbol}\n";
-            message += $"Pair: {firstSymbol.Pair}\n";
-            message += $"Contract type: {firstSymbol.ContractType}\n";
-            message += $"Delivery date: {firstSymbol.DeliveryDate}\n";
-            message += $"On board date: {firstSymbol.OnBoardDate}\n";
+            Symbols.Add(symbol);
         }
-        else
-        {
-            message = "No symbols found";
-        }
-
-        MessageBox.Show(message);
     }
 }
