@@ -11,6 +11,12 @@ on:
       - master
       - dev
 
+env:
+  DOTNET_VERSION: 8.0.x
+  PROJECT: ./src/RichillCapital.Binance/RichillCapital.Binance.csproj
+  BUILD_CONFIGURATION: Debug
+  ARTIFACT_DIRECTORY: ./artifacts
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,25 +30,26 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: ${{ env.DOTNET_VERSION }}
     
     - name: Restore dependencies
       run: dotnet restore
       
-    - name: Build the API application
-      run: dotnet build ./src/RichillCapital.Binance/RichillCapital.Binance.csproj -c Debug --no-restore
+    - name: Build
+      run: dotnet build ${{ env.PROJECT }} -c ${{ env.BUILD_CONFIGURATION }} --no-restore
 
     - name: Run tests
       run: |
-        dotnet test ./tests/RichillCapital.Api.ArchitectureTests/RichillCapital.Api.ArchitectureTests.csproj -c Debug --no-restore --verbosity normal
-    
-    - name: Publish artifact
-      run: dotnet publish ./src/RichillCapital.Api/RichillCapital.Api.csproj -c Debug -o ./artifact --no-restore --no-build 
-  
-    - name: Upload artifact
+        dotnet test ./tests/RichillCapital.Binance.UnitTests/RichillCapital.Binance.UnitTests.csproj -c ${{ env.BUILD_CONFIGURATION }} --no-restore --verbosity normal
+
+    - name: Package artifact
+      run: |
+        dotnet pack ${{ env.PROJECT }} -c ${{ env.BUILD_CONFIGURATION }} -o ${{ env.ARTIFACT_DIRECTORY }} --no-restore --no-build
+
+    - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: RichillCapital.Api-0.0.0-${{ matrix.os }}-Debug
-        path: ./artifact     
+        name: RichillCapital.Binance-0.0.0-${{ env.BUILD_CONFIGURATION }}
+        path: ${{ env.ARTIFACT_DIRECTORY }}     
   
   
