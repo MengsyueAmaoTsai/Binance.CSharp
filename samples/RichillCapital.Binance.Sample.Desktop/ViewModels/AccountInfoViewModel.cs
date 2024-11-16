@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using RichillCapital.Binance.Sample.Desktop.Services;
 using RichillCapital.Binance.UsdM;
 using System.Windows;
 
@@ -7,13 +8,17 @@ namespace RichillCapital.Binance.Sample.Desktop.ViewModels;
 public sealed partial class AccountInfoViewModel : ViewModel
 {
     public AccountInfoViewModel(
+        IWindowService windowService,
+        IMessageBoxService messageBoxService,
         IBinanceUsdMRestClient binanceUsdMRestClient) 
-        : base(binanceUsdMRestClient)
+        : base(windowService, messageBoxService, binanceUsdMRestClient)
     {
     }
 
+
     [ObservableProperty]
     private BinanceAccountInformationResponse? _accountInfo;
+
 
     protected override async Task InitializeAsync()
     {

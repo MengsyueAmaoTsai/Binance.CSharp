@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using RichillCapital.Binance.Sample.Desktop.Services;
 using RichillCapital.Binance.UsdM;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -9,8 +10,10 @@ namespace RichillCapital.Binance.Sample.Desktop.ViewModels;
 public sealed partial class SymbolsViewModel : ViewModel
 {
     public SymbolsViewModel(
+        IWindowService windowService,
+        IMessageBoxService messageBoxService,
         IBinanceUsdMRestClient binanceUsdMRestClient) 
-        : base(binanceUsdMRestClient)
+        : base(windowService, messageBoxService, binanceUsdMRestClient)
     {
         BindingOperations.EnableCollectionSynchronization(Symbols, new object());
     }

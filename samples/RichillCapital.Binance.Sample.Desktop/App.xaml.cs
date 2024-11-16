@@ -47,6 +47,7 @@ public sealed partial class App : Application
             services.AddBinanceUsdM();
 
             services.AddWindowService();
+            services.AddMessageBoxService();
 
             services.AddViews();
             services.AddViewModels();

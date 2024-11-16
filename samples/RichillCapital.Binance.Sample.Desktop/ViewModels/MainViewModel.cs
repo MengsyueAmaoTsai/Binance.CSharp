@@ -12,15 +12,12 @@ namespace RichillCapital.Binance.Sample.Desktop.ViewModels;
 
 public sealed partial class MainViewModel : ViewModel
 {
-    private readonly IWindowService _windowService;
-
     public MainViewModel(
-        IBinanceUsdMRestClient usdMRestClient,
-        IWindowService windowService)
-        : base(usdMRestClient)
+        IWindowService windowService,
+        IMessageBoxService messageBoxService,
+        IBinanceUsdMRestClient usdMRestClient)
+        : base(windowService, messageBoxService ,usdMRestClient)
     {
-        _windowService = windowService;
-
         BindingOperations.EnableCollectionSynchronization(Logs, new object());
         BindingOperations.EnableCollectionSynchronization(Symbols, new object());
     }
