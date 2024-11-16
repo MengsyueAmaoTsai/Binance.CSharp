@@ -122,14 +122,27 @@ public sealed partial class MainViewModel : ViewModel
     [RelayCommand]
     private async Task TestConnectivityAsync()
     {
-        var result = await _binanceUsdMRestClient.TestConnectivityAsync(default);
-
-        if (result.IsFailure)
+        var spotResult = await _binanceSpotRestClient.TestConnectivityAsync(default);
+        
+        if (spotResult.IsFailure)
         {
             ServerAvailable = false;
-            _messageBoxService.ShowBinanceError(result.Error);
+            _messageBoxService.ShowBinanceError(spotResult.Error);
             return;
         }
+
+        MessageBox.Show("Spot server is available.");
+
+        var usdMResult = await _binanceUsdMRestClient.TestConnectivityAsync(default);
+
+        if (usdMResult.IsFailure)
+        {
+            ServerAvailable = false;
+            _messageBoxService.ShowBinanceError(usdMResult.Error);
+            return;
+        }
+
+        MessageBox.Show("USD-M server is available.");
 
         ServerAvailable = true;
     }
