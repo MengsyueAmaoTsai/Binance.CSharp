@@ -14,19 +14,22 @@
             <!--SPOT API CONNECTION STATUS-->
             <StackPanel Orientation="Horizontal" Margin="0, 5">
                 <Ellipse Width="15" Height="15" Margin="0, 0, 10, 0" Fill="Green"/>
-                <TextBlock Text="Binance Spot" VerticalAlignment="Center"/>
+                <TextBlock Text="Binance Spot" Margin="0, 0, 10, 0" VerticalAlignment="Center"/>
+                <Button Content="Connect"/>
             </StackPanel>
             
             <!--USD-M API CONNECTION STATUS-->
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <Ellipse Width="15" Height="15" Margin="0, 0, 10, 0" Fill="Red"/>
-                <TextBlock Text="Binance USD-M" VerticalAlignment="Center"/>
+                <TextBlock Text="Binance USD-M" Margin="0, 0, 10, 0" VerticalAlignment="Center"/>
+                <Button Content="Connect"/>
             </StackPanel>
 
             <!--COIN-M API CONNECTION STATUS-->
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <Ellipse Width="15" Height="15" Margin="0, 0, 10, 0" Fill="Orange"/>
-                <TextBlock Text="Binance COIN-M" VerticalAlignment="Center"/>
+                <TextBlock Text="Binance COIN-M" Margin="0, 0, 10, 0" VerticalAlignment="Center"/>
+                <Button Content="Connect"/>
             </StackPanel>
         </StackPanel>
     </GroupBox>

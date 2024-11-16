@@ -34,13 +34,28 @@
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="API Key"/>
+                    <TextBox MinWidth="200"/>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Secret Key"/>
+                    <TextBox MinWidth="200"/>
+                </StackPanel>
+
+                <Button Content="Save" Command="{Binding SaveCommand}" />
+            </StackPanel>
             
-            <controls:ConnectionStatusPanel Grid.Row="0" Grid.Column="0" />
+            <controls:ConnectionStatusPanel Grid.Row="1" Grid.Column="0" />
         </Grid>
         
         <StatusBar Grid.Row="3">

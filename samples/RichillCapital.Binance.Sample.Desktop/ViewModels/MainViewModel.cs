@@ -76,6 +76,11 @@ public sealed partial class MainViewModel : ViewModel
     #endregion
 
     [RelayCommand]
+    private void Save()
+    {
+    }
+
+    [RelayCommand]
     private async Task PlaceOrderAsync()
     {
         if (SelectedSymbol is null)
