@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using RichillCapital.Binance.Shared;
 
 namespace RichillCapital.Binance.Spot;
 
@@ -12,8 +14,11 @@ public static class BinanceSpotExtensions
         "https://api3.binance.com",
         "https://api4.binance.com",
     ];
+
     public static IServiceCollection AddBinanceSpot(this IServiceCollection services)
     {
+        services.TryAddTransient<HttpResponseHandler>();
+
         services.AddHttpClient<IBinanceSpotRestClient, BinanceSpotRestClient>(client =>
         {
             client.BaseAddress = new Uri("https://api.binance.com");

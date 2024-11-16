@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using RichillCapital.Binance.Shared;
 
 namespace RichillCapital.Binance.UsdM;
 
@@ -12,6 +14,8 @@ public static class BinanceUsdMExtensions
 
     public static IServiceCollection AddBinanceUsdM(this IServiceCollection services)
     {
+        services.TryAddTransient<HttpResponseHandler>();
+
         services.AddHttpClient<IBinanceUsdMRestClient, BinanceUsdMRestClient>(client =>
         {
             client.BaseAddress = new Uri(BaseAddress);
@@ -21,8 +25,4 @@ public static class BinanceUsdMExtensions
 
         return services;
     }
-}
-
-internal sealed record BinanceUsdMOptions
-{
 }
