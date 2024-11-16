@@ -163,19 +163,19 @@ public sealed partial class MainViewModel : ViewModel
 
     private async Task LoadTradableInstrumentsAsync()
     {
-        var exchangeInfoResult = await _binanceUsdMRestClient.GetExchangeInfoAsync(default);
+        var usdMExchangeInfoResult = await _binanceUsdMRestClient.GetExchangeInfoAsync(default);
 
-        if (exchangeInfoResult.IsFailure)
+        if (usdMExchangeInfoResult.IsFailure)
         {
-            _messageBoxService.ShowBinanceError(exchangeInfoResult.Error);
+            _messageBoxService.ShowBinanceError(usdMExchangeInfoResult.Error);
             return;
         }
 
-        var exchangeInfo = exchangeInfoResult.Value;
+        var usdMExchangeInfo = usdMExchangeInfoResult.Value;
 
         Symbols.Clear();
 
-        foreach (var symbol in exchangeInfo.Symbols)
+        foreach (var symbol in usdMExchangeInfo.Symbols)
         {
             Symbols.Add(symbol);
         }

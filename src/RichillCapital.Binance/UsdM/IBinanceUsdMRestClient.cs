@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RichillCapital.Binance.Converters;
+using RichillCapital.Binance.Shared;
 using RichillCapital.SharedKernel.Monads;
 
 namespace RichillCapital.Binance.UsdM;
@@ -24,12 +25,6 @@ public sealed record NewOrderRequest
 
 public sealed record NewOrderResponse
 {
-}
-
-public sealed record BinanceServerTimeResponse
-{
-    [JsonConverter(typeof(TimestampToDateTimeOffsetConverter))]
-    public required DateTimeOffset ServerTime { get; init; }
 }
 
 public sealed record BinanceExchangeInfoResponse
