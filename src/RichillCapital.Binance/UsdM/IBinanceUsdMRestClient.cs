@@ -32,14 +32,6 @@ public sealed record BinanceServerTimeResponse
     public required DateTimeOffset ServerTime { get; init; }
 }
 
-public sealed record BinanceErrorResponse
-{
-    public required int Code { get; init; }
-
-    [JsonProperty("msg")]
-    public required string Message { get; init; }
-}
-
 public sealed record BinanceExchangeInfoResponse
 {
     public required string Timezone { get; init; }

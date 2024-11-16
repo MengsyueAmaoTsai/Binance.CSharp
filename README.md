@@ -7,3 +7,7 @@
 ```bash
 dotnet add package RichillCapital.Binance
 ```
+
+## References
+
+- [Binance API](https://www.binance.com/en/binance-api)

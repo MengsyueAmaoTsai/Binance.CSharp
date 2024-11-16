@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using RichillCapital.Binance.Shared;
 using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monads;
 using System.Security.Cryptography;
@@ -9,7 +10,7 @@ namespace RichillCapital.Binance.UsdM;
 
 internal sealed class BinanceUsdMRestClient(
     ILogger<BinanceUsdMRestClient> _logger,
-    HttpClient _httpClient) : 
+    HttpClient _httpClient) :
     IBinanceUsdMRestClient
 {
     public async Task<Result<BinanceServerTimeResponse>> GetServerTimeAsync(CancellationToken cancellationToken = default)
@@ -40,7 +41,7 @@ internal sealed class BinanceUsdMRestClient(
     public async Task<Result<BinanceAccountInformationResponse>> GetAccountInformationAsync(CancellationToken cancellationToken = default)
     {
         var path = "/fapi/v3/account";
-        
+
         var queryString = $"timestamp={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
         var signature = CreateSignature(queryString);
         queryString += $"&signature={signature}";
@@ -96,7 +97,7 @@ internal sealed class BinanceUsdMRestClient(
                 .Match(
                     res => Error.Unexpected(res.Code.ToString(), res.Message),
                     error => error);
-            
+
             return Result<TResponse>.Failure(error);
         }
 
