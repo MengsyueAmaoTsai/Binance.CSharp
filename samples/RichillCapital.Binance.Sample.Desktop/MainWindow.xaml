@@ -22,6 +22,7 @@
         <Menu Grid.Row="0">
             <MenuItem Header="Features">
                 <MenuItem Header="Symbols" Command="{Binding ShowSymbolsWindowCommand}"/>
+                <MenuItem Header="Account info" Command="{Binding ShowAccountInfoWindowCommand}"/>
             </MenuItem>
         </Menu>
 

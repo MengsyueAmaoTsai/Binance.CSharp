@@ -65,6 +65,8 @@ internal static class ServiceExtensions
 
         services.AddTransient<SymbolsWindow>();
 
+        services.AddTransient<AccountInfoWindow>();
+
         return services;
     }
 
@@ -73,6 +75,8 @@ internal static class ServiceExtensions
         services.AddSingleton<MainViewModel>();
 
         services.AddTransient<SymbolsViewModel>();
+
+        services.AddTransient<AccountInfoViewModel>();
 
         return services;
     }

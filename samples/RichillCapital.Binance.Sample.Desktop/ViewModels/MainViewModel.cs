@@ -37,6 +37,9 @@ public sealed partial class MainViewModel : ViewModel
     private void ShowSymbolsWindow() => _windowService.ShowWindow<SymbolsWindow>();
 
     [RelayCommand]
+    private void ShowAccountInfoWindow() => _windowService.ShowWindow<AccountInfoWindow>();
+    
+    [RelayCommand]
     private async Task TestConnectivityAsync()
     {
         var result = await _binanceUsdMRestClient.TestConnectivityAsync(default);
@@ -74,8 +77,6 @@ public sealed partial class MainViewModel : ViewModel
             MessageBox.Show(result.Error.Message);
             return;
         }
-
-        MessageBox.Show($"{result.Value}");
     }
 
     private async Task GetAccountBalancesAsync()
@@ -87,7 +88,5 @@ public sealed partial class MainViewModel : ViewModel
             MessageBox.Show(result.Error.Message);
             return;
         }
-
-        MessageBox.Show($"First balance => {result.Value.First()}");
     }
 }

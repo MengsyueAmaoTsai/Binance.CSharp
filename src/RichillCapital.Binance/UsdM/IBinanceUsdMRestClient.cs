@@ -109,4 +109,17 @@ public sealed record BinanceAccountBalanceResponse
 
 public sealed record BinanceAccountInformationResponse
 {
+    public required decimal TotalInitialMargin { get; init; }
+    public required decimal TotalMantMargin { get; init; }
+    public required decimal TotalWalletBalance { get; init; }
+    public required decimal TotalUnrealizedProfit { get; init; }
+    public required decimal TotalMarginBalance { get; init; }
+    public required decimal TotalPositionInitialMargin { get; init; }
+    public required decimal TotalOpenOrderInitialMargin { get; init; }
+    public required decimal TotalCrossWalletBalance { get; init; }
+    public required decimal TotalCrossUnPnl { get; init; }
+    public required decimal AvailableBalance { get; init; }
+    public required decimal MaxWithdrawAmount { get; init; }
+    public required IEnumerable<object> Assets { get; init; }
+    public required IEnumerable<object> Positions { get; init; }
 }
