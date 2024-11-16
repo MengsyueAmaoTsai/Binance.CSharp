@@ -1,3 +1,4 @@
 {
-  "dotnet.defaultSolution": "./RichillCapital.Binance.sln"
+  "dotnet.defaultSolution": "./RichillCapital.Binance.sln",
+  "cSpell.words": ["Mvvm"]
 }

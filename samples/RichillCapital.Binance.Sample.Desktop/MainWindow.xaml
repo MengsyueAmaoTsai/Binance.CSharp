@@ -40,7 +40,6 @@
                 Grid.Column="0"
                 Header="Place order">
                 <StackPanel>
-                    <!-- Symbol selection -->
                     <StackPanel Orientation="Horizontal" Margin="5">
                         <TextBlock Text="Symbol: " VerticalAlignment="Center" Width="100"/>
                         <ComboBox 
@@ -50,9 +49,41 @@
                             DisplayMemberPath="Symbol"/>
                     </StackPanel>
 
-                    <Button Margin="5" Content="Submit" Command="{Binding PlaceOrderCommand}"/>
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <RadioButton Content="Market" />
+                        <RadioButton Content="Limit" />
+                        <RadioButton Content="Stop" />
+                        <RadioButton Content="Stop Limit" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <RadioButton Content="Buy"/>
+                        <RadioButton Content="Sell"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <TextBlock Text="Quantity: " VerticalAlignment="Center" Width="100"/>
+                        <TextBox Width="200" Text="{Binding Quantity}" />
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <Button Margin="5" Content="Submit" Command="{Binding PlaceOrderCommand}"/>
+                        <Button Margin="5" Content="Reset"/>
+                    </StackPanel>
                 </StackPanel>
             </GroupBox>
+
+            <DataGrid 
+                Grid.Row="1"
+                AutoGenerateColumns="False"
+                IsReadOnly="True"
+                ItemsSource="{Binding Logs}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Time" Binding="{Binding Time}"/>
+                    <DataGridTextColumn Header="Level" Binding="{Binding Level}"/>
+                    <DataGridTextColumn Header="Message" Binding="{Binding Message}"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
 
         <StatusBar Grid.Row="3">

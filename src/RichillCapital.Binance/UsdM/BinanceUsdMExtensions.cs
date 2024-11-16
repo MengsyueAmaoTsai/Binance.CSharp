@@ -22,3 +22,7 @@ public static class BinanceUsdMExtensions
         return services;
     }
 }
+
+internal sealed record BinanceUsdMOptions
+{
+}

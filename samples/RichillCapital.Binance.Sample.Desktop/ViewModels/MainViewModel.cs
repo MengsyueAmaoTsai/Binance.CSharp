@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using RichillCapital.Binance.Sample.Desktop.Models;
 using RichillCapital.Binance.Sample.Desktop.Services;
 using RichillCapital.Binance.Sample.Desktop.Views.Windows;
 using RichillCapital.Binance.UsdM;
@@ -20,6 +21,7 @@ public sealed partial class MainViewModel : ViewModel
     {
         _windowService = windowService;
 
+        BindingOperations.EnableCollectionSynchronization(Logs, new object());
         BindingOperations.EnableCollectionSynchronization(Symbols, new object());
     }
 
@@ -30,17 +32,27 @@ public sealed partial class MainViewModel : ViewModel
     private bool _serverAvailable;
 
     [ObservableProperty]
-    private BinanceSymbolResponse _selectedSymbol;
+    private BinanceSymbolResponse? _selectedSymbol;
 
+    [ObservableProperty]
+    private string _orderType = "Market";
+
+    [ObservableProperty]
+    private string _side = "Buy";
+
+    [ObservableProperty]
+    private decimal _quantity;
+
+    public ObservableCollection<LogDataGridItem> Logs { get; } = [];
     public ObservableCollection<BinanceSymbolResponse> Symbols { get; } = [];
-
 
     protected override async Task InitializeAsync()
     {
         await TestConnectivityAsync();
         await GetServerTimeAsync();
-
         await LoadTradableInstrumentsAsync();
+
+        InitializeOrderPanel();
     }
 
     [RelayCommand]
@@ -58,14 +70,31 @@ public sealed partial class MainViewModel : ViewModel
             return;
         }
 
+        if (Quantity <= 0)
+        {
+            MessageBox.Show("Please enter a valid quantity.");
+            return;
+        }
+
+        // Show confirmation dialog
+        var isConfirmed = MessageBox.Show(
+            $"Are you sure you want to place a market order for {Quantity} {SelectedSymbol.Symbol}?",
+            "Confirmation",
+            MessageBoxButton.YesNo);
+
+        if (isConfirmed.HasFlag(MessageBoxResult.No))
+        {
+            return;
+        }
+
         var result = await _binanceUsdMRestClient.NewOrderAsync(
             new NewOrderRequest
             {
                 Symbol = SelectedSymbol.Symbol,
                 Side = "BUY",
                 Type = "MARKET",
-                Quantity = 100,
-            }, 
+                Quantity = Quantity,
+            },
             default);
 
         if (result.IsFailure)
@@ -76,7 +105,7 @@ public sealed partial class MainViewModel : ViewModel
 
         MessageBox.Show($"Place order successfully. {result.Value}");
     }
-    
+
     [RelayCommand]
     private async Task TestConnectivityAsync()
     {
@@ -124,10 +153,21 @@ public sealed partial class MainViewModel : ViewModel
         {
             Symbols.Add(symbol);
         }
+    }
 
-        if (Symbols.Count > 0)
+    private void InitializeOrderPanel()
+    {
+        if (Symbols.Count == 0)
         {
-            SelectedSymbol = Symbols.First();
+            return;
         }
+
+        var defaultSymbol = Symbols.First();
+
+        SelectedSymbol = defaultSymbol;
+
+        var quantityTick = 1 / Math.Pow(10, defaultSymbol.QuantityPrecision);
+
+        Quantity = Convert.ToDecimal(quantityTick);
     }
 }
