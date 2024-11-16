@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using RichillCapital.Binance.Sample.Desktop.Services;
 using RichillCapital.Binance.Sample.Desktop.ViewModels;
 using RichillCapital.Binance.Sample.Desktop.Views.Windows;
+using RichillCapital.Binance.Spot;
 using RichillCapital.Binance.UsdM;
 using System.Windows;
 
@@ -42,6 +43,7 @@ public sealed partial class App : Application
             configurationBuilder.AddUserSecrets(typeof(App).Assembly))
         .ConfigureServices((hostContext, services) =>
         {
+            services.AddBinanceSpot();
             services.AddBinanceUsdM();
 
             services.AddWindowService();
